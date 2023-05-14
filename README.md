@@ -51,3 +51,7 @@ inspiration: https://2048game.com/
 - scoring (chess system?)
 - count turns
 - share
+
+### Colors
+
+https://coolors.co/cfc0b4-0d5c63-9df8fb-ed7e07-251f47

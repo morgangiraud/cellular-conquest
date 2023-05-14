@@ -1,37 +1,38 @@
 // Row.tsx
 
 import React from "react";
-import Cell from "./Cell";
+import CellView from "./CellView";
 
-import { CellState } from "@/constants";
+import { CellState, Territory } from "@/constants";
 import { useGameData } from "@/GameContext";
+import { Cell } from "@/Game";
 
 interface RowProps {
-  row: CellState[];
+  cellsRow: Cell[];
   rowIndex: number;
 
   onCellClick: (i: number, j: number) => boolean;
 }
 
-const Row = ({ row, rowIndex, onCellClick }: RowProps) => {
-  const { fortress, player } = useGameData();
-
-  const canInteract =
-    (player === CellState.A && rowIndex < row.length / 2) ||
-    (player === CellState.B && rowIndex >= row.length / 2);
+const Row = ({ cellsRow, rowIndex, onCellClick }: RowProps) => {
+  const { fortressCfg, player } = useGameData();
 
   return (
     <div className="flex mx-auto">
-      {row.map((cell, cellIndex) => {
+      {cellsRow.map((cell, cellIndex) => {
         const isFortress =
-          fortress &&
-          (fortress.a.x === cellIndex || fortress.b.x === cellIndex) &&
-          (fortress.a.y === rowIndex || fortress.b.y === rowIndex);
+          fortressCfg &&
+          (fortressCfg.a.x === cellIndex || fortressCfg.b.x === cellIndex) &&
+          (fortressCfg.a.y === rowIndex || fortressCfg.b.y === rowIndex);
+
+        const canInteract =
+          (player === CellState.A && cell.territory === Territory.A) ||
+          (player === CellState.B && cell.territory === Territory.B);
 
         return (
-          <Cell
+          <CellView
             key={cellIndex}
-            state={cell}
+            cell={cell}
             canInteract={canInteract}
             isFortress={isFortress}
             onClick={() => canInteract && onCellClick(rowIndex, cellIndex)}

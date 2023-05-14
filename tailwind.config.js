@@ -8,10 +8,12 @@ module.exports = {
   theme: {
     extend: {
       backgroundColor: {
-        "cell-a": "var(--cell-a)", // blue color for player a
-        "cell-b": "var(--cell-b)", // red color for player b
-        "cell-empty": "var(--cell-empty)", // white color for empty cells
-        "cell-fortress": "var(--cell-fortress)", // grey color for fortress cells
+        "territory-a": "var(--light-cell-a)",
+        "cell-a": "var(--cell-a)",
+        "territory-b": "var(--light-cell-b)",
+        "cell-b": "var(--cell-b)",
+        "cell-empty": "var(--cell-empty)",
+        "cell-fortress": "var(--cell-fortress)",
       },
     },
   },
@@ -19,6 +21,9 @@ module.exports = {
   safelist: [
     {
       pattern: /bg-cell-(a|b|empty|fortress)/,
+    },
+    {
+      pattern: /bg-territory-(a|b)/,
     },
   ],
 };

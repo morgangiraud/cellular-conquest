@@ -3,25 +3,20 @@
 import React from "react";
 
 import Row from "./Row";
-import { CellState } from "@/constants";
+import { useGameData } from "@/GameContext";
 
-interface GridViewProps {
-  size: number;
-  cells: CellState[][] | undefined;
+const GridView = () => {
+  const { size, cells, handleCellClick } = useGameData();
 
-  onCellClick: (i: number, j: number) => boolean;
-}
-
-const GridView = ({ size, cells, onCellClick }: GridViewProps) => {
   if (!cells) return null;
   return (
     <div className={`grid grid-cols-${size} gap-0`}>
-      {cells.map((row, rowIndex) => (
+      {cells.map((cellsRow, rowIndex) => (
         <Row
           key={rowIndex}
-          row={row}
+          cellsRow={cellsRow}
           rowIndex={rowIndex}
-          onCellClick={onCellClick}
+          onCellClick={handleCellClick}
         />
       ))}
     </div>

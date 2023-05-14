@@ -2,17 +2,26 @@
 
 import React, { createContext, useState, useEffect, useCallback } from "react";
 
-import { CellState, Fortress, GameState, Player } from "./constants";
-import { Game } from "./Game";
+import {
+  BOARD_SIZE,
+  CellState,
+  fortressCfg,
+  FRAME_RATE,
+  GameState,
+  NB_MAX_MOVES,
+  NB_UPDATE_PER_TURN,
+  Player,
+} from "./constants";
+import { Cell, Game } from "./Game";
 
 export type SelectedCellsCounterType = Record<Player, number>;
 
 interface GameContextProps {
   size: number;
+  fortressCfg: fortressCfg;
   gameState: GameState | undefined;
   player: Player | undefined;
-  cells: CellState[][] | undefined;
-  fortress: Fortress | undefined;
+  cells: Cell[][] | undefined;
   selectedCellsCounter: SelectedCellsCounterType;
   statusText: string;
   setPlayer: React.Dispatch<React.SetStateAction<Player | undefined>>;
@@ -32,8 +41,12 @@ export const GameContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const size = 20;
-  const nbIter = 10;
+  const size = BOARD_SIZE;
+
+  const fortressCfg: fortressCfg = {
+    a: { x: (size / 2) | 0, y: 1, width: 1, height: 1 },
+    b: { x: (size / 2) | 0, y: size - 2, width: 1, height: 1 },
+  };
 
   const [gameState, setGameState] = useState<GameState>(GameState.INIT);
   const [game, setGame] = useState<Game | undefined>(undefined);
@@ -43,33 +56,65 @@ export const GameContextProvider = ({
       a: 0,
       b: 0,
     });
-  const [cells, setCells] = useState<CellState[][] | undefined>(undefined);
+  const [cells, setCells] = useState<Cell[][] | undefined>(undefined);
 
   const [statusText, setStatusText] = useState("");
 
   // Initialize the board
   useEffect(() => {
-    const fortress: Fortress = {
-      a: { x: (size / 2) | 0, y: 1, width: 1, height: 1 },
-      b: { x: (size / 2) | 0, y: size - 2, width: 1, height: 1 },
-    };
-    const game = new Game(size, fortress);
+    const game = new Game(size, fortressCfg);
 
     setGame(game);
     setPlayer(game.initialPlayer);
-    setCells(game.getCellStates());
+    setCells([...game.grid.cells]);
     setGameState(
       game.initialPlayer === CellState.A
         ? GameState.PLAYER_A
         : GameState.PLAYER_B
     );
-  }, []);
+    // The dependency list is empty so this is only run once on mount
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Player listener
   useEffect(() => {
     if (player === undefined) return;
 
     setStatusText(`Waiting for player ${player} to choose their squares`);
   }, [player]);
+
+  // Game state listener
+  useEffect(() => {
+    if (game === undefined) return;
+
+    if (gameState === GameState.GAME_OF_LIFE) {
+      const updateGameState = () => {
+        game.grid.update();
+        setCells([...game.grid.cells]);
+
+        return game.checkWin();
+      };
+
+      let iter = 0;
+      const interval = setInterval(function () {
+        const winState = updateGameState();
+        iter++;
+        if (iter > NB_UPDATE_PER_TURN) {
+          clearInterval(interval);
+          setPlayer(game.initialPlayer);
+          setGameState(
+            game.initialPlayer === CellState.A
+              ? GameState.PLAYER_A
+              : GameState.PLAYER_B
+          );
+        } else if (winState != false) {
+          clearInterval(interval);
+          setStatusText(`Player ${winState} wins!`);
+          setPlayer(undefined);
+          setGameState(GameState.END);
+        }
+      }, (1000 / FRAME_RATE) | 0);
+    }
+  }, [game, gameState]);
 
   const handleCellClick = useCallback(
     (i: number, j: number) => {
@@ -80,14 +125,14 @@ export const GameContextProvider = ({
 
       let maximumReached = false;
       const newCells = [...cells];
-      if (newCells[i][j] === player) {
-        newCells[i][j] = CellState.EMPTY;
+      if (newCells[i][j].state === player) {
+        newCells[i][j].state = CellState.EMPTY;
         setSelectedCellsCounter({
           ...selectedCellsCounter,
           [player]: selectedCellsCounter[player] - 1,
         });
-      } else if (selectedCellsCounter[player] < 3) {
-        newCells[i][j] = player;
+      } else if (selectedCellsCounter[player] < NB_MAX_MOVES) {
+        newCells[i][j].state = player;
         setSelectedCellsCounter({
           ...selectedCellsCounter,
           [player]: selectedCellsCounter[player] + 1,
@@ -107,7 +152,7 @@ export const GameContextProvider = ({
     if (cells === undefined) return;
     if (player === undefined) return;
 
-    game.grid.assignCells(cells);
+    game.grid.assignCells(cells.map((row) => row.map((cell) => cell.state)));
 
     setSelectedCellsCounter((prevState) => ({
       ...prevState,
@@ -142,39 +187,6 @@ export const GameContextProvider = ({
     }
   }, [game, player, gameState, cells, setPlayer, setSelectedCellsCounter]);
 
-  useEffect(() => {
-    if (game === undefined) return;
-
-    if (gameState === GameState.GAME_OF_LIFE) {
-      const updateGameState = () => {
-        game.grid.update();
-        setCells(game.getCellStates());
-
-        return game.checkWin();
-      };
-
-      let iter = 0;
-      const interval = setInterval(function () {
-        const winState = updateGameState();
-        iter++;
-        if (iter > nbIter) {
-          clearInterval(interval);
-          setPlayer(game.initialPlayer);
-          setGameState(
-            game.initialPlayer === CellState.A
-              ? GameState.PLAYER_A
-              : GameState.PLAYER_B
-          );
-        } else if (winState != false) {
-          clearInterval(interval);
-          setStatusText(`Player ${game.checkWin()} wins!`);
-          setPlayer(undefined);
-          setGameState(GameState.END);
-        }
-      }, 100);
-    }
-  }, [game, gameState]);
-
   return (
     <GameContext.Provider
       value={{
@@ -182,7 +194,7 @@ export const GameContextProvider = ({
         gameState,
         player,
         cells,
-        fortress: game?.fortress,
+        fortressCfg: fortressCfg,
         selectedCellsCounter,
         statusText,
         setPlayer,

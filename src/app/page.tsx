@@ -7,34 +7,26 @@ import { GameState } from "@/constants";
 import { useEffect } from "react";
 
 export default function Home() {
-  const {
-    size,
-    gameState,
-    cells,
-    statusText,
-    handleCellClick,
-    handleValidation,
-  } = useGameData();
+  const { gameState, statusText, handleValidation } = useGameData();
 
   useEffect(() => {
-    const handleKeyDown = (ev: KeyboardEvent) => {
-      ev.stopPropagation();
-      ev.preventDefault();
+    if (gameState === undefined) return;
 
+    const handleKeyDown = (ev: KeyboardEvent) => {
       if (ev.key === " ") {
         handleValidation();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [handleValidation]);
+  }, [gameState, handleValidation]);
 
   return (
     <div className="flex items-center justify-center h-screen">
       <div className="container mx-auto p-4">
         <h1 className="text-2xl mb-4">Cellular conquest</h1>
         <p>{statusText}</p>
-        <GridView size={size} cells={cells} onCellClick={handleCellClick} />
+        <GridView />
         {(gameState === GameState.PLAYER_A ||
           gameState === GameState.PLAYER_B) && (
           <Button

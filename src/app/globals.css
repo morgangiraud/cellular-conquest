@@ -4,7 +4,9 @@
 
 :root {
   --cell-a: #9df8fb;
+  --light-cell-a: #d8fdfd;
   --cell-b: #ed7e07;
+  --light-cell-b: #fdecd8;
   --cell-empty: #ffffff;
   --cell-fortress: gray;
 }

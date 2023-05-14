@@ -6,6 +6,13 @@ export enum CellState {
 
 export type Player = CellState.A | CellState.B;
 
+export enum Territory {
+  A = CellState.A,
+  B = CellState.B,
+  AB = CellState.A + CellState.B,
+  EMPTY = CellState.EMPTY,
+}
+
 export enum GameState {
   INIT = "init",
   PLAYER_A = CellState.A,
@@ -24,7 +31,12 @@ export type Size = {
   height: number;
 };
 
-export type Fortress = {
+export type fortressCfg = {
   a: Position & Size;
   b: Position & Size;
 };
+
+export const BOARD_SIZE = 20;
+export const NB_UPDATE_PER_TURN = 10;
+export const NB_MAX_MOVES = 5;
+export const FRAME_RATE = 10;
