@@ -126,9 +126,9 @@ echo "---" >> prompt.txt
 echo "" >> prompt.txt
 
 # Adding Cell component
-echo "src/components/Cell.tsx" >> prompt.txt
+echo "src/components/CellView.tsx" >> prompt.txt
 echo '```' >> prompt.txt
-cat src/components/Cell.tsx >> prompt.txt
+cat src/components/CellView.tsx >> prompt.txt
 echo '```' >> prompt.txt
 
 echo '------[]------' >> prompt.txt
