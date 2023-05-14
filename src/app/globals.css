@@ -3,25 +3,41 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+  --cell-a: #9df8fb;
+  --cell-b: #ed7e07;
+  --cell-empty: #ffffff;
+  --cell-fortress: gray;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  color: black;
+  background: #cfc0b4;
+}
+
+@keyframes bounce {
+  0% {
+    transform: scale(1, 1) translateY(0);
+  }
+  10% {
+    transform: scale(1.5, 0.9) translateY(0);
+  }
+  30% {
+    transform: scale(0.9, 1.5) translateY(-1px);
+  }
+  50% {
+    transform: scale(1.05, 0.5) translateY(0);
+  }
+  57% {
+    transform: scale(1, 1) translateY(-1px);
+  }
+  64% {
+    transform: scale(1, 1) translateY(0);
+  }
+  100% {
+    transform: scale(1, 1) translateY(0);
+  }
+}
+
+.animate-bounce {
+  animation: bounce 0.3s linear;
 }
