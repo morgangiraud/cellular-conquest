@@ -63,4 +63,35 @@ describe("Grid", () => {
       }
     });
   });
+
+  describe("clone", () => {
+    it("should return a new grid with the same state as the original grid", () => {
+      const size = 3;
+      const initStates = [
+        [CellState.EMPTY, CellState.A, CellState.EMPTY],
+        [CellState.A, CellState.EMPTY, CellState.B],
+        [CellState.EMPTY, CellState.B, CellState.EMPTY],
+      ];
+      const grid = new Grid(size, initStates);
+      const clonedGrid = grid.clone();
+
+      // Ensure that the cloned grid has the same size as the original grid
+      expect(clonedGrid.size).toEqual(grid.size);
+
+      // Ensure that the cloned grid has the same state as the original grid
+      for (let i = 0; i < size; i++) {
+        for (let j = 0; j < size; j++) {
+          expect(clonedGrid.cells[i][j].state).toEqual(grid.cells[i][j].state);
+        }
+      }
+
+      // Ensure that the cloned grid is a new object
+      expect(clonedGrid).not.toBe(grid);
+
+      // Ensure we deep cloned the grid
+      grid.cells[0][0].state = CellState.A;
+      expect(grid.cells[0][0].state).toEqual(CellState.A);
+      expect(clonedGrid.cells[0][0].state).toEqual(CellState.EMPTY);
+    });
+  });
 });

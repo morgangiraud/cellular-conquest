@@ -4,3 +4,4 @@ yarn.lock
 .vercel
 public
 .history
+out/

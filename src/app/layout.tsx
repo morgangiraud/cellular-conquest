@@ -6,8 +6,8 @@ import { GameContextProvider } from "@/GameContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "CeluMata",
-  description: "Strategic cellular automata game for two players",
+  title: "Cellular Conquest",
+  description: "Ode to the Odyssey of Evolution",
 };
 
 export default function RootLayout({

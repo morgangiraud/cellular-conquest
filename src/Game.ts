@@ -8,6 +8,10 @@ export class Cell {
     this.state = state;
     this.territory = territory;
   }
+
+  clone() {
+    return new Cell(this.state, this.territory);
+  }
 }
 
 export class Grid {
@@ -41,10 +45,19 @@ export class Grid {
       cellTerritories[i] = new Array(size).fill(Territory.EMPTY);
 
       for (let j = 0; j < size; j++) {
-        // Check for top and bottom thirds
-        if (i < size / 3) {
+        if (cellStates[i][j] === CellState.A) {
           cellTerritories[i][j] = Territory.A;
-        } else if (i >= (size / 3) * 2) {
+          continue;
+        }
+        if (cellStates[i][j] === CellState.B) {
+          cellTerritories[i][j] = Territory.B;
+          continue;
+        }
+
+        // Check for top and bottom thirds
+        if (i < Math.ceil(size / 3)) {
+          cellTerritories[i][j] = Territory.A;
+        } else if (i >= Math.floor((size / 3) * 2)) {
           cellTerritories[i][j] = Territory.B;
         }
 
@@ -145,6 +158,11 @@ export class Grid {
         this.cells[i][j] = new Cell(states[i][j], cellTerritories[i][j]);
       }
     }
+  }
+  clone() {
+    const states = this.cells.map((row) => row.map((cell) => cell.state));
+    let newGrid = new Grid(this.size, states);
+    return newGrid;
   }
 }
 

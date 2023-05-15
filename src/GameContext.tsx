@@ -42,14 +42,13 @@ export const GameContextProvider = ({
   children: React.ReactNode;
 }) => {
   const size = BOARD_SIZE;
-
   const fortressCfg: fortressCfg = {
     a: { x: (size / 2) | 0, y: 1, width: 1, height: 1 },
     b: { x: (size / 2) | 0, y: size - 2, width: 1, height: 1 },
   };
+  const [game, setGame] = useState<Game | undefined>(undefined);
 
   const [gameState, setGameState] = useState<GameState>(GameState.INIT);
-  const [game, setGame] = useState<Game | undefined>(undefined);
   const [player, setPlayer] = useState<Player | undefined>(undefined);
   const [selectedCellsCounter, setSelectedCellsCounter] =
     useState<SelectedCellsCounterType>({
@@ -66,7 +65,7 @@ export const GameContextProvider = ({
 
     setGame(game);
     setPlayer(game.initialPlayer);
-    setCells([...game.grid.cells]);
+    setCells(game.grid.cells.map((row) => row.map((cell) => cell.clone())));
     setGameState(
       game.initialPlayer === CellState.A
         ? GameState.PLAYER_A
@@ -122,17 +121,16 @@ export const GameContextProvider = ({
       if (cells === undefined) return false;
 
       console.log(`handleCellClick: ${i}, ${j}`);
-
+      const newCell = cells[i][j].clone();
       let maximumReached = false;
-      const newCells = [...cells];
-      if (newCells[i][j].state === player) {
-        newCells[i][j].state = CellState.EMPTY;
+      if (newCell.state === player) {
+        newCell.state = CellState.EMPTY;
         setSelectedCellsCounter({
           ...selectedCellsCounter,
           [player]: selectedCellsCounter[player] - 1,
         });
       } else if (selectedCellsCounter[player] < NB_MAX_MOVES) {
-        newCells[i][j].state = player;
+        newCell.state = player;
         setSelectedCellsCounter({
           ...selectedCellsCounter,
           [player]: selectedCellsCounter[player] + 1,
@@ -140,7 +138,8 @@ export const GameContextProvider = ({
       } else {
         maximumReached = true;
       }
-      setCells(newCells);
+      cells[i][j] = newCell;
+      setCells(cells);
 
       return maximumReached;
     },
