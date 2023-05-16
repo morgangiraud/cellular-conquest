@@ -1,5 +1,6 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
 
 import { GameContextProvider } from "@/GameContext";
@@ -22,6 +23,20 @@ export default function RootLayout({
         <body className={inter.className}>
           {children}
           <Analytics />
+          {/* Google tag (gtag.js) */}
+          <Script
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=G-H8CKXEGKR7"
+          />
+          <Script id="google-analytics">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+              gtag('config', 'G-H8CKXEGKR7');
+            `}
+          </Script>
         </body>
       </html>
     </GameContextProvider>
