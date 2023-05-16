@@ -29,6 +29,7 @@ interface GameContextProps {
   setMoves: React.Dispatch<React.SetStateAction<string[]>>;
   handleCellClick: (i: number, j: number) => boolean;
   handleValidation: () => void;
+  resetState: () => void;
 }
 
 export const GameContext = createContext<GameContextProps | undefined>(
@@ -57,8 +58,7 @@ export const GameContextProvider = ({
 
   const [statusText, setStatusText] = useState("");
 
-  // Initialize the board
-  useEffect(() => {
+  const resetState = () => {
     const game = new Game(size, fortressCfg);
 
     setGame(game);
@@ -72,6 +72,11 @@ export const GameContextProvider = ({
         ? GameState.PLAYER_A
         : GameState.PLAYER_B
     );
+  };
+
+  // Initialize the board
+  useEffect(() => {
+    resetState();
     // The dependency list is empty so this is only run once on mount
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -79,7 +84,7 @@ export const GameContextProvider = ({
   useEffect(() => {
     if (player === undefined) return;
 
-    setStatusText(`Waiting for player ${player} to choose their squares`);
+    setStatusText(`Player ${player.toUpperCase()} turn!`);
   }, [player]);
 
   // Game state listener
@@ -159,7 +164,7 @@ export const GameContextProvider = ({
 
       return false;
     },
-    [player, cells, moves]
+    [player, cells, moves, size]
   );
 
   const handleValidation = useCallback(() => {
@@ -214,6 +219,7 @@ export const GameContextProvider = ({
         setMoves,
         handleCellClick,
         handleValidation,
+        resetState,
       }}
     >
       {children}

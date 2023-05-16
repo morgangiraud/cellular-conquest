@@ -14,7 +14,7 @@ export const DashedCircle = ({ color }: { color: string }) => {
         fill="transparent"
         stroke={color}
         strokeDasharray="10"
-        strokeWidth="5"
+        strokeWidth="8%"
       />
     </svg>
   );

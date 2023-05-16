@@ -3,10 +3,9 @@ import React from "react";
 export const Fort = () => (
   <>
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="23"
-      height="23"
+      className="absolute w-full h-full"
       viewBox="0 0 25000 25000"
+      xmlns="http://www.w3.org/2000/svg"
     >
       <g fill="rgb(35,31,32)">
         <g>
