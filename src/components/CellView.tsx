@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 
-import { CellState, NB_MAX_MOVES, Territory } from "@/constants";
+import { CellState, Diff, NB_MAX_MOVES, Territory } from "@/constants";
 import { Fort } from "@/svgs/fort";
 import { Cell } from "@/Game";
+import { classNames } from "@/utils";
+import { DashedCircle } from "./svgs/dashed-circle";
 
 interface CellViewProps {
   cell: Cell;
+  diff: Diff;
   canInteract: boolean;
   isFortress?: boolean;
   onClick: () => boolean;
@@ -13,6 +16,7 @@ interface CellViewProps {
 
 const CellView = ({
   cell,
+  diff,
   canInteract,
   isFortress = false,
   onClick,
@@ -37,24 +41,43 @@ const CellView = ({
   }
 
   return (
-    <div
-      className={`w-6 h-6 border border-black ${bgClass}  ${
-        canInteract
-          ? `cursor-pointer hover:border-cell-${cell.state} hover:scale-125 ${
-              isBouncing ? "animate-bounce" : ""
-            }`
-          : "cursor-not-allowed"
-      }`}
-      onClick={handleClick}
-    >
-      {isFortress && <Fort />}
-      {showTooltip && (
-        <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 w-48 p-2 bg-black text-white text-xs rounded">
-          Maximum {NB_MAX_MOVES} squares can be selected. Unselect a square
-          first.
-        </div>
-      )}
-    </div>
+    <>
+      <div
+        className={classNames(
+          "w-6 h-6 border border-black flex items-center justify-center",
+          bgClass,
+          canInteract
+            ? `cursor-pointer hover:border-cell-${cell.state} hover:scale-125 ${
+                isBouncing ? "animate-bounce" : ""
+              }`
+            : "cursor-not-allowed",
+          diff[0] !== 0 ? `diff-${diff[1]}` : ""
+        )}
+        onClick={handleClick}
+      >
+        {diff[0] === -1 && (
+          <div className="relative w-6 h-6">
+            <DashedCircle color="black"></DashedCircle>
+          </div>
+        )}{" "}
+        {diff[0] === 1 && (
+          <div className="relative w-6 h-6">
+            <DashedCircle
+              color={
+                diff[1] === CellState.A ? "var(--cell-a)" : "var(--cell-b)"
+              }
+            ></DashedCircle>
+          </div>
+        )}
+        {isFortress && <Fort />}
+        {showTooltip && (
+          <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 w-48 p-2 bg-black text-white text-xs rounded">
+            Maximum {NB_MAX_MOVES} squares can be selected. Unselect a square
+            first.
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

@@ -1,30 +1,37 @@
 import { Grid } from "@/Game";
 import { CellState, Territory } from "@/constants";
 
+const CA = CellState.A;
+const CB = CellState.B;
+const CE = CellState.EMPTY;
+
+const TA = Territory.A;
+const TB = Territory.B;
+const TAB = Territory.AB;
+const TE = Territory.EMPTY;
+
 describe("Grid", () => {
   describe("computeTerritories", () => {
     it("should correctly assign territories based on cell states", () => {
       const size = 6; // Make sure this is a multiple of 3 for easy testing
-      const initStates: CellState[][] = Array(size).fill(
-        Array(size).fill(CellState.EMPTY)
-      );
+      const initStates: CellState[][] = Array(size).fill(Array(size).fill(CE));
       const grid = new Grid(size, initStates);
 
       const territories = grid.computeTerritories(size, initStates);
       //   console.log(initStates);
       //   console.log(territories);
 
-      // Check that the top third is Territory.A
+      // Check that the top third is TA
       for (let i = 0; i < size / 3; i++) {
         for (let j = 0; j < size; j++) {
-          expect(territories[i][j]).toEqual(Territory.A);
+          expect(territories[i][j]).toEqual(TA);
         }
       }
 
-      // Check that the bottom third is Territory.B
+      // Check that the bottom third is TB
       for (let i = (size / 3) * 2; i < size; i++) {
         for (let j = 0; j < size; j++) {
-          expect(territories[i][j]).toEqual(Territory.B);
+          expect(territories[i][j]).toEqual(TB);
         }
       }
 
@@ -36,19 +43,46 @@ describe("Grid", () => {
       }
     });
 
-    it("should correctly assign territories based on neighboring cell states", () => {
+    it("distant case", () => {
       const size = 4; // Make sure this is a multiple of 3 for easy testing
       const initStates = [
-        [CellState.A, CellState.A, CellState.A, CellState.A],
-        [CellState.EMPTY, CellState.EMPTY, CellState.EMPTY, CellState.EMPTY],
-        [CellState.EMPTY, CellState.B, CellState.EMPTY, CellState.EMPTY],
-        [CellState.B, CellState.B, CellState.B, CellState.B],
+        [CA, CA, CA, CA],
+        [CE, CE, CE, CE],
+        [CE, CB, CE, CE],
+        [CB, CB, CB, CB],
       ];
       const expectedTerritories = [
-        [Territory.A, Territory.A, Territory.A, Territory.A],
-        [Territory.AB, Territory.AB, Territory.AB, Territory.A],
-        [Territory.B, Territory.B, Territory.B, Territory.B],
-        [Territory.B, Territory.B, Territory.B, Territory.B],
+        [TA, TA, TA, TA],
+        [TAB, TAB, TAB, TA],
+        [TB, TB, TB, TB],
+        [TB, TB, TB, TB],
+      ];
+      const grid = new Grid(size, initStates);
+      const territories = grid.computeTerritories(size, initStates);
+      //   console.log(initStates);
+      //   console.log(territories);
+
+      // Check that the middle third is Territory.EMPTY
+      for (let i = 0; i < size; i++) {
+        for (let j = 0; j < size; j++) {
+          expect(territories[i][j]).toEqual(expectedTerritories[i][j]);
+        }
+      }
+    });
+
+    it("touching case", () => {
+      const size = 4; // Make sure this is a multiple of 3 for easy testing
+      const initStates = [
+        [CA, CA, CA, CA],
+        [CE, CA, CA, CE],
+        [CE, CB, CB, CE],
+        [CB, CB, CB, CB],
+      ];
+      const expectedTerritories = [
+        [TA, TA, TA, TA],
+        [TAB, TA, TA, TAB],
+        [TB, TB, TB, TB],
+        [TB, TB, TB, TB],
       ];
       const grid = new Grid(size, initStates);
       const territories = grid.computeTerritories(size, initStates);
@@ -68,9 +102,9 @@ describe("Grid", () => {
     it("should return a new grid with the same state as the original grid", () => {
       const size = 3;
       const initStates = [
-        [CellState.EMPTY, CellState.A, CellState.EMPTY],
-        [CellState.A, CellState.EMPTY, CellState.B],
-        [CellState.EMPTY, CellState.B, CellState.EMPTY],
+        [CE, CA, CE],
+        [CA, CE, CB],
+        [CE, CB, CE],
       ];
       const grid = new Grid(size, initStates);
       const clonedGrid = grid.clone();
@@ -89,9 +123,9 @@ describe("Grid", () => {
       expect(clonedGrid).not.toBe(grid);
 
       // Ensure we deep cloned the grid
-      grid.cells[0][0].state = CellState.A;
-      expect(grid.cells[0][0].state).toEqual(CellState.A);
-      expect(clonedGrid.cells[0][0].state).toEqual(CellState.EMPTY);
+      grid.cells[0][0].state = CA;
+      expect(grid.cells[0][0].state).toEqual(CA);
+      expect(clonedGrid.cells[0][0].state).toEqual(CE);
     });
   });
 });

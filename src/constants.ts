@@ -13,6 +13,9 @@ export enum Territory {
   EMPTY = CellState.EMPTY,
 }
 
+export type Diff = [-1 | 0 | 1, CellState];
+export type DiffMap = Diff[][];
+
 export enum GameState {
   INIT = "init",
   PLAYER_A = CellState.A,

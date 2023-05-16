@@ -5,6 +5,7 @@ import React, { createContext, useState, useEffect, useCallback } from "react";
 import {
   BOARD_SIZE,
   CellState,
+  DiffMap,
   fortressCfg,
   FRAME_RATE,
   GameState,
@@ -12,9 +13,8 @@ import {
   NB_UPDATE_PER_TURN,
   Player,
 } from "./constants";
-import { Cell, Game } from "./Game";
-
-export type SelectedCellsCounterType = Record<Player, number>;
+import { Cell, Game, Grid } from "./Game";
+import { computeDiffMap } from "./utils";
 
 interface GameContextProps {
   size: number;
@@ -22,12 +22,11 @@ interface GameContextProps {
   gameState: GameState | undefined;
   player: Player | undefined;
   cells: Cell[][] | undefined;
-  selectedCellsCounter: SelectedCellsCounterType;
+  nextDiffMap: DiffMap | undefined;
+  moves: string[];
   statusText: string;
   setPlayer: React.Dispatch<React.SetStateAction<Player | undefined>>;
-  setSelectedCellsCounter: React.Dispatch<
-    React.SetStateAction<SelectedCellsCounterType>
-  >;
+  setMoves: React.Dispatch<React.SetStateAction<string[]>>;
   handleCellClick: (i: number, j: number) => boolean;
   handleValidation: () => void;
 }
@@ -50,12 +49,11 @@ export const GameContextProvider = ({
 
   const [gameState, setGameState] = useState<GameState>(GameState.INIT);
   const [player, setPlayer] = useState<Player | undefined>(undefined);
-  const [selectedCellsCounter, setSelectedCellsCounter] =
-    useState<SelectedCellsCounterType>({
-      a: 0,
-      b: 0,
-    });
+  const [moves, setMoves] = useState<string[]>([]);
   const [cells, setCells] = useState<Cell[][] | undefined>(undefined);
+  const [nextDiffMap, setNextDiffMap] = useState<DiffMap | undefined>(
+    undefined
+  );
 
   const [statusText, setStatusText] = useState("");
 
@@ -66,6 +64,9 @@ export const GameContextProvider = ({
     setGame(game);
     setPlayer(game.initialPlayer);
     setCells(game.grid.cells.map((row) => row.map((cell) => cell.clone())));
+    setNextDiffMap(
+      computeDiffMap(game.getCellStates(), game.grid.computeNextStates())
+    );
     setGameState(
       game.initialPlayer === CellState.A
         ? GameState.PLAYER_A
@@ -94,11 +95,15 @@ export const GameContextProvider = ({
       };
 
       let iter = 0;
+      setNextDiffMap(undefined);
       const interval = setInterval(function () {
         const winState = updateGameState();
         iter++;
         if (iter > NB_UPDATE_PER_TURN) {
           clearInterval(interval);
+          setNextDiffMap(
+            computeDiffMap(game.getCellStates(), game.grid.computeNextStates())
+          );
           setPlayer(game.initialPlayer);
           setGameState(
             game.initialPlayer === CellState.A
@@ -120,30 +125,41 @@ export const GameContextProvider = ({
       if (player === undefined) return false;
       if (cells === undefined) return false;
 
-      console.log(`handleCellClick: ${i}, ${j}`);
+      const isMoveDone = moves.indexOf(`${i}-${j}`) !== -1;
+      if (!isMoveDone && moves.length === NB_MAX_MOVES) return true;
+
+      let newMoves: string[];
+      if (isMoveDone) {
+        newMoves = moves.filter((move) => move !== `${i}-${j}`);
+      } else {
+        newMoves = [...moves, `${i}-${j}`];
+      }
+
       const newCell = cells[i][j].clone();
-      let maximumReached = false;
       if (newCell.state === player) {
         newCell.state = CellState.EMPTY;
-        setSelectedCellsCounter({
-          ...selectedCellsCounter,
-          [player]: selectedCellsCounter[player] - 1,
-        });
-      } else if (selectedCellsCounter[player] < NB_MAX_MOVES) {
+      } else if (moves.length < NB_MAX_MOVES) {
         newCell.state = player;
-        setSelectedCellsCounter({
-          ...selectedCellsCounter,
-          [player]: selectedCellsCounter[player] + 1,
-        });
-      } else {
-        maximumReached = true;
       }
       cells[i][j] = newCell;
+
+      setMoves(newMoves);
       setCells(cells);
 
-      return maximumReached;
+      const newGrid = new Grid(
+        size,
+        cells.map((cellRow) => cellRow.map((cell) => cell.state))
+      );
+      setNextDiffMap(
+        computeDiffMap(
+          newGrid.cells.map((cellRow) => cellRow.map((cell) => cell.state)),
+          newGrid.computeNextStates()
+        )
+      );
+
+      return false;
     },
-    [player, cells, selectedCellsCounter]
+    [player, cells, moves]
   );
 
   const handleValidation = useCallback(() => {
@@ -153,10 +169,7 @@ export const GameContextProvider = ({
 
     game.grid.assignCells(cells.map((row) => row.map((cell) => cell.state)));
 
-    setSelectedCellsCounter((prevState) => ({
-      ...prevState,
-      [player]: 0,
-    }));
+    setMoves([]);
 
     setPlayer(player === CellState.A ? CellState.B : CellState.A);
     if (
@@ -184,7 +197,7 @@ export const GameContextProvider = ({
       setPlayer(undefined);
       setGameState(GameState.GAME_OF_LIFE);
     }
-  }, [game, player, gameState, cells, setPlayer, setSelectedCellsCounter]);
+  }, [game, player, gameState, cells, setPlayer, setMoves]);
 
   return (
     <GameContext.Provider
@@ -193,11 +206,12 @@ export const GameContextProvider = ({
         gameState,
         player,
         cells,
+        nextDiffMap,
         fortressCfg: fortressCfg,
-        selectedCellsCounter,
+        moves,
         statusText,
         setPlayer,
-        setSelectedCellsCounter,
+        setMoves,
         handleCellClick,
         handleValidation,
       }}

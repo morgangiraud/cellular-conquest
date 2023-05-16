@@ -3,7 +3,7 @@
 import React from "react";
 import CellView from "./CellView";
 
-import { CellState, Territory } from "@/constants";
+import { CellState, Diff, Territory } from "@/constants";
 import { useGameData } from "@/GameContext";
 import { Cell } from "@/Game";
 
@@ -15,7 +15,7 @@ interface RowProps {
 }
 
 const Row = ({ cellsRow, rowIndex, onCellClick }: RowProps) => {
-  const { fortressCfg, player } = useGameData();
+  const { fortressCfg, player, nextDiffMap } = useGameData();
 
   return (
     <div className="flex mx-auto">
@@ -29,10 +29,15 @@ const Row = ({ cellsRow, rowIndex, onCellClick }: RowProps) => {
           (player === CellState.A && cell.territory === Territory.A) ||
           (player === CellState.B && cell.territory === Territory.B);
 
+        const nextDiff: Diff = nextDiffMap
+          ? nextDiffMap[rowIndex][cellIndex]
+          : [0, CellState.EMPTY];
+
         return (
           <CellView
             key={cellIndex}
             cell={cell}
+            diff={nextDiff}
             canInteract={canInteract}
             isFortress={isFortress}
             onClick={() => canInteract && onCellClick(rowIndex, cellIndex)}

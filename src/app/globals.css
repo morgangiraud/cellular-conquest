@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .orb {
+    @apply relative bg-blue-500 w-24 h-24 rounded-full shadow-md overflow-hidden;
+  }
+
+  .shine {
+    @apply absolute w-1/2 h-1/2 bg-white opacity-25 rounded-full;
+    top: 10%;
+    left: 25%;
+    transform: rotate(45deg);
+  }
+}
+
 :root {
   --cell-a: #0ae4eb;
   --light-cell-a: #d8fdfd;

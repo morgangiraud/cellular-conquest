@@ -21,7 +21,7 @@ The first user session happened:
 
 ## Changes to be made
 
-To shorten the gameL
+To shorten the game
 
 - move from 3 possible selection to 5 changes in general
   - the change from 3 to 5 is arbitrary, a better way of doing it will be to link this one to the bestiray

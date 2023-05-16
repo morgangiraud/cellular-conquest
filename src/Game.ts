@@ -122,8 +122,8 @@ export class Grid {
     }
   }
 
-  update() {
-    let newStates: CellState[][] = new Array(this.size);
+  computeNextStates() {
+    const newStates: CellState[][] = new Array(this.size);
     for (let i = 0; i < this.size; i++) {
       newStates[i] = new Array(this.size);
       for (let j = 0; j < this.size; j++) {
@@ -131,6 +131,11 @@ export class Grid {
       }
     }
 
+    return newStates;
+  }
+
+  update() {
+    const newStates = this.computeNextStates();
     const newTerritories = this.computeTerritories(this.size, newStates);
 
     for (let i = 0; i < this.size; i++) {
@@ -159,6 +164,7 @@ export class Grid {
       }
     }
   }
+
   clone() {
     const states = this.cells.map((row) => row.map((cell) => cell.state));
     let newGrid = new Grid(this.size, states);

@@ -1,4 +1,4 @@
-import { CellState } from "./constants";
+import { CellState, DiffMap } from "./constants";
 
 export function initBoardState(size: number): CellState[][] {
   const boardState = Array(size)
@@ -7,18 +7,6 @@ export function initBoardState(size: number): CellState[][] {
       const row = Array(size)
         .fill(undefined)
         .map((_, j) => {
-          //   if (i >= 2 && i <= 2 && j >= size / 2 && j < (size + 1) / 2) {
-          //     return CellState.FORTRESS;
-          //   }
-
-          //   if (
-          //     i >= size - 2 &&
-          //     i <= size - 2 &&
-          //     j >= size / 2 &&
-          //     j < (size + 1) / 2
-          //   ) {
-          //     return CellState.FORTRESS;
-          //   }
           return CellState.EMPTY;
         });
 
@@ -27,3 +15,24 @@ export function initBoardState(size: number): CellState[][] {
 
   return boardState;
 }
+
+export function computeDiffMap(
+  states: CellState[][],
+  nextStates: CellState[][]
+): DiffMap {
+  return states.map((stateRow, i) =>
+    stateRow.map((state, j) => {
+      if (state === CellState.EMPTY) {
+        return [nextStates[i][j] === CellState.EMPTY ? 0 : 1, nextStates[i][j]];
+      } else {
+        return [
+          nextStates[i][j] === CellState.EMPTY ? -1 : 0,
+          nextStates[i][j],
+        ];
+      }
+    })
+  );
+}
+
+export const classNames = (...classes: string[]) =>
+  classes.filter(Boolean).join(" ");
