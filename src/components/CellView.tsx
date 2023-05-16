@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 
 import { CellState, Diff, NB_MAX_MOVES, Territory } from "@/constants";
-import { Fort } from "@/svgs/Fort";
+
 import { Cell } from "@/Game";
 import { classNames } from "@/utils";
 import { DashedCircle } from "@/svgs/DashedCircle";
 import { Circle } from "@/svgs/Circle";
+import { Fort } from "@/svgs/Fort";
 
 interface CellViewProps {
   cell: Cell;

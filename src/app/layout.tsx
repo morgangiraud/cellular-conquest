@@ -1,5 +1,6 @@
 import "./globals.css";
 import { Inter } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 
 import { GameContextProvider } from "@/GameContext";
 
@@ -18,7 +19,10 @@ export default function RootLayout({
   return (
     <GameContextProvider>
       <html lang="en">
-        <body className={inter.className}>{children}</body>
+        <body className={inter.className}>
+          {children}
+          <Analytics />
+        </body>
       </html>
     </GameContextProvider>
   );
