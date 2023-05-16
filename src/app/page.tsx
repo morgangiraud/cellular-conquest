@@ -9,7 +9,8 @@ import Legend from "@/components/Legend";
 import AboutModal from "@/components/AboutModal";
 
 export default function Home() {
-  const { gameState, statusText, handleValidation, resetState } = useGameData();
+  const { gameState, statusText, handleValidation, resetState, moves } =
+    useGameData();
 
   useEffect(() => {
     if (gameState === undefined) return;
@@ -24,7 +25,7 @@ export default function Home() {
   }, [gameState, handleValidation]);
 
   return (
-    <div className="flex items-center justify-center h-screen">
+    <div className="flex items-center justify-center max-h-fit overflow-auto">
       <div className="container mx-auto max-w-xl">
         <div className="flex">
           <h1 className="text-2xl ml-0 mr-auto my-auto">Cellular conquest</h1>
@@ -43,7 +44,7 @@ export default function Home() {
               color="primary"
               onClick={handleValidation}
             >
-              Validate your moves
+              Validate your moves {moves.length} / 5
             </Button>
           )}
           {gameState === GameState.END && (
