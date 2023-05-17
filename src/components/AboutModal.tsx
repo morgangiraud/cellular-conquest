@@ -11,7 +11,6 @@ export default function AboutModal() {
       <Button
         className="mx-auto"
         variant="contained"
-        color="primary"
         onClick={() => setIsOpen(true)}
       >
         About

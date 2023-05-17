@@ -22,8 +22,9 @@
   --cell-b: #f89225;
   --light-cell-b: #fdecd8;
   --cell-empty: #ffffff;
-  --cell-fortress: #613a3a;
+  --secondary: #613a3a;
   --other: #1d3523;
+  --other-light: #d7eada;
 }
 
 body {

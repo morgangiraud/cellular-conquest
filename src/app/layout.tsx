@@ -4,6 +4,7 @@ import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
 
 import { GameContextProvider } from "@/GameContext";
+import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -41,6 +42,7 @@ export default function RootLayout({
               </Script>
             </>
           )}
+          <Footer />
         </body>
       </html>
     </GameContextProvider>
