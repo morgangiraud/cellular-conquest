@@ -25,11 +25,12 @@ interface GameContextProps {
   nextDiffMap: DiffMap | undefined;
   moves: string[];
   statusText: string;
+  nbUpdate: number;
   setPlayer: React.Dispatch<React.SetStateAction<Player | undefined>>;
   setMoves: React.Dispatch<React.SetStateAction<string[]>>;
   handleCellClick: (i: number, j: number) => boolean;
   handleValidation: () => void;
-  resetState: () => void;
+  restart: () => void;
 }
 
 export const GameContext = createContext<GameContextProps | undefined>(
@@ -48,21 +49,26 @@ export const GameContextProvider = ({
   };
   const [game, setGame] = useState<Game | undefined>(undefined);
 
-  const [gameState, setGameState] = useState<GameState>(GameState.INIT);
   const [player, setPlayer] = useState<Player | undefined>(undefined);
   const [moves, setMoves] = useState<string[]>([]);
+  const [nbUpdate, setNbUpdate] = useState(0);
   const [cells, setCells] = useState<Cell[][] | undefined>(undefined);
   const [nextDiffMap, setNextDiffMap] = useState<DiffMap | undefined>(
     undefined
   );
+  const [gameState, setGameState] = useState<GameState>(GameState.INIT);
 
   const [statusText, setStatusText] = useState("");
 
-  const resetState = () => {
-    const game = new Game(size, fortressCfg);
+  const restart = () => {
+    setGameState(GameState.INIT);
+    setStatusText("");
 
+    const game = new Game(size, fortressCfg);
     setGame(game);
     setPlayer(game.initialPlayer);
+    setMoves([]);
+    setNbUpdate(0);
     setCells(game.grid.cells.map((row) => row.map((cell) => cell.clone())));
     setNextDiffMap(
       computeDiffMap(game.getCellStates(), game.grid.computeNextStates())
@@ -76,7 +82,7 @@ export const GameContextProvider = ({
 
   // Initialize the board
   useEffect(() => {
-    resetState();
+    restart();
     // The dependency list is empty so this is only run once on mount
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -99,12 +105,11 @@ export const GameContextProvider = ({
         return game.checkWin();
       };
 
-      let iter = 0;
       setNextDiffMap(undefined);
+      let nbIter = 0;
       const interval = setInterval(function () {
         const winState = updateGameState();
-        iter++;
-        if (iter > NB_UPDATE_PER_TURN) {
+        if (nbIter > NB_UPDATE_PER_TURN) {
           clearInterval(interval);
           setNextDiffMap(
             computeDiffMap(game.getCellStates(), game.grid.computeNextStates())
@@ -115,12 +120,15 @@ export const GameContextProvider = ({
               ? GameState.PLAYER_A
               : GameState.PLAYER_B
           );
+          setNbUpdate(0);
         } else if (winState != false) {
           clearInterval(interval);
           setStatusText(`Player ${winState} wins!`);
           setPlayer(undefined);
           setGameState(GameState.END);
         }
+        nbIter += 1;
+        setNbUpdate(nbIter);
       }, (1000 / FRAME_RATE) | 0);
     }
   }, [game, gameState]);
@@ -215,11 +223,12 @@ export const GameContextProvider = ({
         fortressCfg: fortressCfg,
         moves,
         statusText,
+        nbUpdate,
         setPlayer,
         setMoves,
         handleCellClick,
         handleValidation,
-        resetState,
+        restart,
       }}
     >
       {children}

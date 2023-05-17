@@ -40,6 +40,6 @@ export type fortressCfg = {
 };
 
 export const BOARD_SIZE = 17;
-export const NB_UPDATE_PER_TURN = 10;
+export const NB_UPDATE_PER_TURN = 8;
 export const NB_MAX_MOVES = 5;
-export const FRAME_RATE = 10;
+export const FRAME_RATE = 8;

@@ -16,17 +16,19 @@
 }
 
 :root {
+  --background: #cfc0b4;
   --cell-a: #0ae4eb;
   --light-cell-a: #d8fdfd;
-  --cell-b: #ed7e07;
+  --cell-b: #f89225;
   --light-cell-b: #fdecd8;
   --cell-empty: #ffffff;
-  --cell-fortress: gray;
+  --cell-fortress: #613a3a;
+  --other: #1d3523;
 }
 
 body {
   color: black;
-  background: #cfc0b4;
+  background: var(--background);
 }
 
 @keyframes bounce {
@@ -55,4 +57,27 @@ body {
 
 .animate-bounce {
   animation: bounce 0.3s linear;
+}
+
+@keyframes pop {
+  0%,
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+
+  20% {
+    -webkit-transform: scale(0.9);
+    transform: scale(0.9);
+  }
+
+  60% {
+    -webkit-transform: scale(1.05);
+    transform: scale(1.05);
+  }
+}
+
+.animate-pop {
+  -webkit-animation: pop 0.2s;
+  animation: pop 0.2s;
 }

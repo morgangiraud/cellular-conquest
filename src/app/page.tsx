@@ -3,13 +3,15 @@
 import Button from "@/components/Button";
 import GridView from "../components/GridView";
 import { useGameData } from "@/GameContext";
-import { GameState } from "@/constants";
+import { GameState, NB_UPDATE_PER_TURN } from "@/constants";
 import { useEffect } from "react";
 import Legend from "@/components/Legend";
 import AboutModal from "@/components/AboutModal";
+import Loader from "@/components/Loader";
+import DashedLine from "@/svgs/DashedLine";
 
 export default function Home() {
-  const { gameState, statusText, handleValidation, resetState, moves } =
+  const { gameState, statusText, handleValidation, restart, moves, nbUpdate } =
     useGameData();
 
   useEffect(() => {
@@ -35,20 +37,30 @@ export default function Home() {
         <p className="text-center">{statusText}</p>
 
         <GridView />
+        {/* <div className="relative my-1">
+          <DashedLine
+            strokeWidth={2}
+            strokeColor="var(--other)"
+            fillPercentage={((nbUpdate / NB_UPDATE_PER_TURN) * 100) | 0}
+          />
+        </div> */}
+
         <div className="flex justify-center">
-          {(gameState === GameState.PLAYER_A ||
-            gameState === GameState.PLAYER_B) && (
+          {gameState === GameState.PLAYER_A ||
+          gameState === GameState.PLAYER_B ? (
             <Button
               className="mx-auto"
               variant="contained"
-              color="primary"
+              gameState={gameState}
               onClick={handleValidation}
             >
               Validate your moves {moves.length} / 5
             </Button>
+          ) : (
+            <Loader />
           )}
           {gameState === GameState.END && (
-            <Button variant="contained" color="primary" onClick={resetState}>
+            <Button variant="contained" onClick={restart}>
               Restart
             </Button>
           )}

@@ -7,11 +7,12 @@ module.exports = {
   ],
   theme: {
     extend: {
-      backgroundColor: {
-        "territory-a": "var(--light-cell-a)",
+      colors: {
+        other: "var(--other)",
         "cell-a": "var(--cell-a)",
-        "territory-b": "var(--light-cell-b)",
+        "territory-a": "var(--light-cell-a)",
         "cell-b": "var(--cell-b)",
+        "territory-b": "var(--light-cell-b)",
         "cell-empty": "var(--cell-empty)",
         "cell-fortress": "var(--cell-fortress)",
       },

@@ -54,4 +54,4 @@ inspiration: https://2048game.com/
 
 ### Colors
 
-https://coolors.co/cfc0b4-0d5c63-0ae4eb-ed7e07-251f47
+https://coolors.co/613a3a-1d3523-cfc0b4-0ae4eb-f89225
