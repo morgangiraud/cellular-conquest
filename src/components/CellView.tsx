@@ -12,16 +12,18 @@ interface CellViewProps {
   cell: Cell;
   diff: Diff;
   canInteract: boolean;
-  isFortress?: boolean;
   onClick: () => boolean;
+  isFortress?: boolean;
+  className?: string;
 }
 
 const CellView = ({
   cell,
   diff,
   canInteract,
-  isFortress = false,
   onClick,
+  isFortress = false,
+  className = "",
 }: CellViewProps) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const [isBouncing, setIsBouncing] = useState(false);
@@ -55,7 +57,8 @@ const CellView = ({
                 isBouncing ? "animate-bounce" : ""
               }`
             : "cursor-not-allowed",
-          diff[0] !== 0 ? `diff-${diff[1]}` : ""
+          diff[0] !== 0 ? `diff-${diff[1]}` : "",
+          className
         )}
         onClick={handleClick}
       >

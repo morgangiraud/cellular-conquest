@@ -1,7 +1,14 @@
 import { useState } from "react";
 
 import Button from "@/components/Button";
-import { NB_UPDATE_PER_TURN } from "@/constants";
+import {
+  CellState,
+  NB_MAX_MOVES,
+  NB_UPDATE_PER_TURN,
+  Territory,
+} from "@/constants";
+import CellView from "./CellView";
+import { Cell } from "@/Game";
 
 export default function AboutModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,7 +20,7 @@ export default function AboutModal() {
         variant="contained"
         onClick={() => setIsOpen(true)}
       >
-        About
+        Help
       </Button>
       {isOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -32,14 +39,32 @@ export default function AboutModal() {
               </li>
               <li className="text-lg">
                 Each cell in the game can exist in one of three states: empty,
-                occupied by Player A (marked as &apos;a&apos;), or occupied by
-                Player B (marked as &apos;b&apos;).
+                occupied by Player A <span className="text-cell-a">(blue)</span>
+                , or occupied by Player B{" "}
+                <span className="text-cell-b">(orange)</span>.
               </li>
               <li className="text-lg">
                 The transitions of the cells follow the rules of Conway&apos;s
-                Game of Life, where &apos;a&apos; and &apos;b&apos; represent
-                live cells. When a new cell is born, its type is determined by
-                the majority of its neighboring cells.
+                Game of Life, where{" "}
+                <CellView
+                  cell={new Cell(CellState.A, Territory.A)}
+                  diff={[0, CellState.EMPTY]}
+                  canInteract={false}
+                  isFortress={false}
+                  onClick={() => false}
+                  className="inline-block"
+                />{" "}
+                and{" "}
+                <CellView
+                  cell={new Cell(CellState.B, Territory.B)}
+                  diff={[0, CellState.EMPTY]}
+                  canInteract={false}
+                  isFortress={false}
+                  onClick={() => false}
+                  className="inline-block"
+                />{" "}
+                represent live cells. When a new cell is born, its type is
+                determined by the majority of its neighboring cells.
               </li>
               <li className="text-lg">
                 The game grid is divided into two territories, each serving as
@@ -47,9 +72,9 @@ export default function AboutModal() {
                 there is a designated area known as the &apos;fortress&apos;.
               </li>
               <li className="text-lg">
-                Each turn, both players are allowed to modify the state of up to
-                three cells within their respective countries. After these
-                modifications, the game evolves naturally for{" "}
+                Each turn, both players are allowed to modify the state of up to{" "}
+                {NB_MAX_MOVES} cells within their respective countries. After
+                these modifications, the game evolves naturally for{" "}
                 {NB_UPDATE_PER_TURN} iterations according to the rules of
                 cellular automata.
               </li>
