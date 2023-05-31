@@ -24,8 +24,8 @@ interface GameContextProps {
   cells: Cell[][] | undefined;
   nextDiffMap: DiffMap | undefined;
   moves: string[];
-  statusText: string;
   nbUpdate: number;
+  winner: Player | undefined;
   setPlayer: React.Dispatch<React.SetStateAction<Player | undefined>>;
   setMoves: React.Dispatch<React.SetStateAction<string[]>>;
   handleCellClick: (i: number, j: number) => boolean;
@@ -57,12 +57,10 @@ export const GameContextProvider = ({
     undefined
   );
   const [gameState, setGameState] = useState<GameState>(GameState.INIT);
-
-  const [statusText, setStatusText] = useState("");
+  const [winner, setWinner] = useState<Player>();
 
   const restart = () => {
     setGameState(GameState.INIT);
-    setStatusText("");
 
     const game = new Game(size, fortressCfg);
     setGame(game);
@@ -85,13 +83,6 @@ export const GameContextProvider = ({
     restart();
     // The dependency list is empty so this is only run once on mount
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Player listener
-  useEffect(() => {
-    if (player === undefined) return;
-
-    setStatusText(`Player ${player.toUpperCase()} turn!`);
-  }, [player]);
 
   // Game state listener
   useEffect(() => {
@@ -122,8 +113,8 @@ export const GameContextProvider = ({
           );
           setNbUpdate(0);
         } else if (winState != false) {
+          setWinner(winState);
           clearInterval(interval);
-          setStatusText(`Player ${winState} wins!`);
           setPlayer(undefined);
           setGameState(GameState.END);
         }
@@ -222,8 +213,8 @@ export const GameContextProvider = ({
         nextDiffMap,
         fortressCfg: fortressCfg,
         moves,
-        statusText,
         nbUpdate,
+        winner,
         setPlayer,
         setMoves,
         handleCellClick,
