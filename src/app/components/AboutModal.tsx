@@ -1,6 +1,8 @@
+"use client";
+
 import { useState } from "react";
 
-import Button from "@/components/Button";
+import Button from "@/app/components/Button";
 import {
   CellState,
   NB_MAX_MOVES,

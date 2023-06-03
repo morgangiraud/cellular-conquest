@@ -1,8 +1,8 @@
-// Grid.tsx
+"use client";
 
 import React from "react";
 
-import { useGameData } from "@/GameContext";
+import { useGameData } from "@/app/GameContext";
 import { CellState, Diff, Territory } from "@/constants";
 import CellView from "./CellView";
 
