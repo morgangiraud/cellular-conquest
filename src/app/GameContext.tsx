@@ -12,9 +12,9 @@ import {
   NB_MAX_MOVES,
   NB_UPDATE_PER_TURN,
   Player,
-} from "./constants";
-import { Cell, Game, Grid } from "./Game";
-import { computeDiffMap } from "./utils";
+} from "@/constants";
+import { Cell, Game, Grid } from "@/Game";
+import { computeDiffMap } from "@/utils";
 
 interface GameContextProps {
   size: number;

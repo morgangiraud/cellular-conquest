@@ -1,3 +1,5 @@
+"use client";
+
 import { GameState } from "@/constants";
 import { useState } from "react";
 
