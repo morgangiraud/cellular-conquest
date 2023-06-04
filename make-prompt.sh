@@ -66,9 +66,9 @@ echo "---" >> prompt.txt
 echo "" >> prompt.txt
 
 # Adding GameContext context
-echo "src/app/GameContext.tsx" >> prompt.txt
+echo "src/app/contexts/GameContext.tsx" >> prompt.txt
 echo '```' >> prompt.txt
-cat src/app/GameContext.tsx >> prompt.txt
+cat src/app/contexts/GameContext.tsx >> prompt.txt
 echo '```' >> prompt.txt
 
 echo "" >> prompt.txt

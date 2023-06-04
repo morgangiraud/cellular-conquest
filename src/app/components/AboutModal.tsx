@@ -16,7 +16,7 @@ export default function AboutModal() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div>
+    <div className="ml-4">
       <Button
         className="mx-auto"
         variant="contained"

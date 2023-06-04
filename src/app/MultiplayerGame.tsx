@@ -2,13 +2,17 @@
 
 import Button from "@/app/components/Button";
 import GridView from "./components/GridView";
-import { useGameData } from "@/app/contexts/GameContext";
 import { CellState, GameState, NB_UPDATE_PER_TURN, Player } from "@/constants";
 import { useEffect } from "react";
 import Loader from "@/app/components/Loader";
 import DashedLine from "@/app/svgs/DashedLine";
+import { useMultiplayerGameData } from "./contexts/MultiplayerGameContext";
 
-export default function Game() {
+export default function MultiplayerGame({
+  resetSwitch,
+}: {
+  resetSwitch: () => void;
+}) {
   const {
     size,
     fortressCfg,
@@ -20,8 +24,7 @@ export default function Game() {
     winner,
     handleValidation,
     handleCellClick,
-    restart,
-  } = useGameData();
+  } = useMultiplayerGameData();
 
   useEffect(() => {
     if (gameState === undefined) return;
@@ -70,9 +73,6 @@ export default function Game() {
 
   return (
     <>
-      <h2 className="my-4 text-center text-2xl font-extrabold text-gray-900">
-        Offline mode
-      </h2>
       <GridView
         size={size}
         fortressCfg={fortressCfg}
@@ -99,8 +99,8 @@ export default function Game() {
       </p>
 
       <div className="flex justify-center">
-        {gameState === GameState.PLAYER_A ||
-        gameState === GameState.PLAYER_B ? (
+        {(gameState === GameState.PLAYER_A ||
+          gameState === GameState.PLAYER_B) && (
           <Button
             className="mx-auto"
             variant="contained"
@@ -110,12 +110,15 @@ export default function Game() {
             Validate your moves{" "}
             {moves[gameState === GameState.PLAYER_A ? 0 : 1].length} / 5
           </Button>
-        ) : (
-          <Loader />
         )}
+
+        {(gameState === GameState.PLAYER_A_WAITING ||
+          gameState === GameState.PLAYER_B_WAITING ||
+          gameState === GameState.GAME_OF_LIFE) && <Loader />}
+
         {gameState === GameState.END && (
-          <Button variant="contained" onClick={restart}>
-            Restart
+          <Button variant="contained" onClick={resetSwitch}>
+            Back to the Lobby!
           </Button>
         )}
       </div>

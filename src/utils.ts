@@ -36,3 +36,9 @@ export function computeDiffMap(
 
 export const classNames = (...classes: string[]) =>
   classes.filter(Boolean).join(" ");
+
+export const debugLog = (...args: any[]) => {
+  if (process.env.NEXT_PUBLIC_DEBUG_LOG) {
+    console.debug(...args);
+  }
+};

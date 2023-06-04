@@ -55,9 +55,9 @@ export class Grid {
         }
 
         // Check for top and bottom thirds
-        if (i < Math.ceil(size / 3)) {
+        if (i < Math.ceil((4 * size) / 9)) {
           cellTerritories[i][j] = Territory.A;
-        } else if (i >= Math.floor((size / 3) * 2)) {
+        } else if (i >= Math.floor((5 * size) / 9)) {
           cellTerritories[i][j] = Territory.B;
         }
 

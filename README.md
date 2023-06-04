@@ -45,11 +45,11 @@ This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-opti
 
 inspiration: https://2048game.com/
 
-- see user sessions 1
-- Add a help button
-- multi- language?
-- scoring (chess system?)
-- count turns
+- multiplayer:
+  - forbid the capacity to play over another player move
+- UI
+  - signup/signin popup
+  - improve leaderboard style
 - share
 
 ### Colors

@@ -50,7 +50,7 @@ const CellView = ({
     <>
       <div
         className={classNames(
-          "w-6 h-6 border border-black relative items-center justify-center",
+          "w-6 h-6 md:w-8 md:h-8 lg:w-10 lg:h-10 border border-black relative items-center justify-center",
           bgClass,
           canInteract
             ? `cursor-pointer hover:border-cell-${

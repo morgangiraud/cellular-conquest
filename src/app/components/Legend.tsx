@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { CellState, Diff, Territory } from "@/constants";
 
