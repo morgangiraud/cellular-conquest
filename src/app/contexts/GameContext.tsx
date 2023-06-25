@@ -198,18 +198,7 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
       setNextDiffMap(undefined);
       let nbIter = 0;
       const interval = setInterval(function () {
-        const winState = updateGameState();
-
-        if (winState != false) {
-          clearInterval(interval);
-
-          setNbGameStateUpdate(0);
-          setWinner(winState);
-          setGameState(GameState.END);
-          return;
-        }
-
-        if (nbIter > NB_UPDATE_PER_TURN) {
+        if (nbIter >= NB_UPDATE_PER_TURN) {
           clearInterval(interval);
 
           setNextDiffMap(
@@ -221,6 +210,16 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
               ? GameState.PLAYER_A
               : GameState.PLAYER_B
           );
+          return;
+        }
+
+        const winState = updateGameState();
+        if (winState != false) {
+          clearInterval(interval);
+
+          setNbGameStateUpdate(0);
+          setWinner(winState);
+          setGameState(GameState.END);
           return;
         }
 

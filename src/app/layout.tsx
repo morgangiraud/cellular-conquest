@@ -5,7 +5,6 @@ import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
 
 import Footer from "@/app/components/Footer";
-import { debugLog } from "@/utils";
 import Nav from "./components/Nav";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -25,8 +24,8 @@ export default function RootLayout({
       <body className={`${inter.className}`}>
         <Nav />
 
-        <div className="flex items-center justify-center max-h-fit overflow-auto pb-4">
-          <div className="container mx-auto max-w-xl">{children}</div>
+        <div className="flex items-center justify-center max-h-fit pb-4">
+          <div className="container mx-auto">{children}</div>
         </div>
 
         <Footer />

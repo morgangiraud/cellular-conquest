@@ -113,7 +113,7 @@ const legendElements: LegendItem[] = [
 
 const Legend = () => {
   return (
-    <div className="p-4 bg-white shadow rounded">
+    <div className="p-4 bg-white shadow rounded mx-4">
       <h3 className="text-center text-lg font-semibold mb-2">Legend</h3>
       {legendElements.map((el, i) => (
         <LegendItem
