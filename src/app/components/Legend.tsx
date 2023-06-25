@@ -19,7 +19,7 @@ const LegendItem = ({
   isFortress,
   text,
 }: LegendItem) => (
-  <div className="flex items-center  my-1">
+  <div className="flex items-center my-1">
     {cells.map((cell, i) => (
       <CellView
         key={i}
@@ -113,7 +113,7 @@ const legendElements: LegendItem[] = [
 
 const Legend = () => {
   return (
-    <div className="p-4 bg-white shadow rounded mx-4">
+    <div className="max-w-sm md:max-w-md lg:max-w-lg mx-auto  p-4 bg-white shadow rounded">
       <h3 className="text-center text-lg font-semibold mb-2">Legend</h3>
       {legendElements.map((el, i) => (
         <LegendItem

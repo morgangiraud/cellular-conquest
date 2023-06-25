@@ -8,6 +8,7 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 
 import { useState } from "react";
 import Button from "./Button";
+import { Multi } from "../svgs/Multi";
 
 export default function LoginForm({ session }: { session: Session | null }) {
   const router = useRouter();
@@ -22,7 +23,11 @@ export default function LoginForm({ session }: { session: Session | null }) {
 
   supabase.auth.onAuthStateChange((event, session) => {
     console.log("onAuthStateChange", event, session);
-    if (event == "SIGNED_IN") router.push("/");
+    if (event == "SIGNED_IN") {
+      setIsOpen(false);
+      router.refresh();
+      router.push("/");
+    }
   });
 
   return session ? (
@@ -36,7 +41,8 @@ export default function LoginForm({ session }: { session: Session | null }) {
         variant="contained"
         onClick={() => setIsOpen(true)}
       >
-        Multiplayer!
+        <Multi className="block sm:hidden" />{" "}
+        <span className="hidden sm:block">Multiplayer!</span>
       </Button>
       {isOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50">

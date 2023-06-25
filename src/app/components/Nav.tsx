@@ -3,6 +3,7 @@ import Link from "next/link";
 import AboutModal from "./AboutModal";
 import Button from "./Button";
 import Login from "./login";
+import { Leaderboard } from "../svgs/Leaderboard";
 
 export default function Nav() {
   return (
@@ -13,7 +14,10 @@ export default function Nav() {
 
       <div className="flex items-center justify-between">
         <Link href="/leaderboard">
-          <Button variant="contained">Leaderboard</Button>
+          <Button variant="contained">
+            <Leaderboard className="block sm:hidden" />{" "}
+            <span className="hidden sm:block">Leaderboard</span>
+          </Button>
         </Link>
 
         <AboutModal />

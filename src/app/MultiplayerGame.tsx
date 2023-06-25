@@ -85,13 +85,24 @@ export default function MultiplayerGame({
         handleCellClick={handleCellClick}
       />
 
-      {/* <div className="relative my-1">
-          <DashedLine
-            strokeWidth={2}
-            strokeColor="var(--other)"
-            fillPercentage={((nbGameStateUpdate / NB_UPDATE_PER_TURN) * 100) | 0}
-          />
-        </div> */}
+      <div className="max-w-[300px] md:max-w-sm lg:max-w-md mx-auto h-4 bg-gray-200 rounded-full my-4 overflow-hidden">
+        <div
+          style={{
+            width: `${
+              ((nbGameStateUpdate === 0 ? 1 : nbGameStateUpdate) /
+                NB_UPDATE_PER_TURN) *
+              100
+            }%`,
+          }}
+          className={`h-full text-xs text-center text-white ${
+            nbGameStateUpdate === 0
+              ? "bg-other border-r-2 border-dashed border-blue-500"
+              : "bg-blue-500"
+          } rounded-full`}
+        >
+          {nbGameStateUpdate}/{NB_UPDATE_PER_TURN}
+        </div>
+      </div>
 
       <p
         className={`text-center text-xl font-semibold m-1 ${

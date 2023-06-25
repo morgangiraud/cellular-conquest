@@ -1,9 +1,15 @@
 import * as React from "react";
 
-export const DashedCircle = ({ color }: { color: string }) => {
+export const DashedCircle = ({
+  className,
+  color,
+}: {
+  className?: string;
+  color: string;
+}) => {
   return (
     <svg
-      className="absolute w-full h-full"
+      className={`absolute w-full h-full ${className}`}
       viewBox="0 0 100 100"
       xmlns="http://www.w3.org/2000/svg"
     >
