@@ -1,6 +1,8 @@
+"use client";
+
 import { useState } from "react";
 
-import Button from "@/components/Button";
+import Button from "@/app/components/Button";
 import {
   CellState,
   NB_MAX_MOVES,
@@ -14,7 +16,7 @@ export default function AboutModal() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div>
+    <div className="ml-4">
       <Button
         className="mx-auto"
         variant="contained"

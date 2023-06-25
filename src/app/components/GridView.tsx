@@ -1,15 +1,35 @@
-// Grid.tsx
+"use client";
 
 import React from "react";
 
-import { useGameData } from "@/GameContext";
-import { CellState, Diff, Territory } from "@/constants";
+import {
+  CellState,
+  Diff,
+  Territory,
+  GameState,
+  fortressCfg,
+  DiffMap,
+} from "@/constants";
 import CellView from "./CellView";
+import { Cell } from "@/Game";
 
-const GridView = () => {
-  const { size, cells, handleCellClick, fortressCfg, player, nextDiffMap } =
-    useGameData();
+interface GridViewProps {
+  size: number;
+  fortressCfg: fortressCfg;
+  gameState: GameState | undefined;
+  cells: Cell[][] | undefined;
+  nextDiffMap: DiffMap | undefined;
+  handleCellClick: (i: number, j: number) => boolean;
+}
 
+const GridView = ({
+  size,
+  fortressCfg,
+  gameState,
+  cells,
+  nextDiffMap,
+  handleCellClick,
+}: GridViewProps) => {
   if (!cells) return null;
   return (
     <div className={`grid grid-cols-${size} gap-0`}>
@@ -22,9 +42,9 @@ const GridView = () => {
               (fortressCfg.a.y === rowIdx || fortressCfg.b.y === rowIdx);
 
             const canInteract =
-              (player === CellState.A &&
+              (gameState === GameState.PLAYER_A &&
                 [Territory.A, Territory.AB].indexOf(cell.territory) !== -1) ||
-              (player === CellState.B &&
+              (gameState === GameState.PLAYER_B &&
                 [Territory.B, Territory.AB].indexOf(cell.territory) !== -1);
 
             const nextDiff: Diff = nextDiffMap

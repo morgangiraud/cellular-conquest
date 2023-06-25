@@ -1,12 +1,14 @@
+"use client";
+
 import { GameState } from "@/constants";
 import { useState } from "react";
 
 interface ButtonProps {
-  className?: string;
   variant?: string;
   gameState?: GameState;
-  onClick: () => void;
+  onClick?: () => void;
   children: React.ReactNode;
+  className?: string;
 }
 
 const Button = ({
@@ -25,14 +27,25 @@ const Button = ({
 
   const animation = "focus:outline-none animate-pop";
 
+  let classes: string;
+  if (variant === "contained") {
+    classes = `px-4 py-2 my-2 rounded ${pop ? animation : ""} ${className} ${
+      gameState ? `bg-cell-${gameState}` : "bg-other text-white"
+    }`;
+  } else {
+    classes = `w-full flex justify-center px-4 py-2 my-2 rounded ${
+      pop ? animation : ""
+    } ${className} ${
+      gameState ? `bg-cell-${gameState}` : "bg-other text-white"
+    }`;
+  }
+
   return (
     <button
-      className={`px-4 py-2 my-2 rounded ${pop ? animation : ""} ${className} ${
-        gameState ? `bg-cell-${gameState}` : "bg-other text-white"
-      }`}
+      className={classes}
       onClick={() => {
         animate();
-        onClick();
+        onClick && onClick();
       }}
     >
       {children}

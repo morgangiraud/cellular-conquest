@@ -1,12 +1,14 @@
+"use client";
+
 import React, { useState } from "react";
 
 import { CellState, Diff, NB_MAX_MOVES, Territory } from "@/constants";
 
 import { Cell } from "@/Game";
 import { classNames } from "@/utils";
-import { DashedCircle } from "@/svgs/DashedCircle";
-import { Circle } from "@/svgs/Circle";
-import { Fort } from "@/svgs/Fort";
+import { DashedCircle } from "@/app/svgs/DashedCircle";
+import { Circle } from "@/app/svgs/Circle";
+import { Fort } from "@/app/svgs/Fort";
 
 interface CellViewProps {
   cell: Cell;
@@ -48,7 +50,7 @@ const CellView = ({
     <>
       <div
         className={classNames(
-          "w-6 h-6 border border-black relative items-center justify-center",
+          "w-6 h-6 md:w-8 md:h-8 lg:w-10 lg:h-10 border border-black relative items-center justify-center",
           bgClass,
           canInteract
             ? `cursor-pointer hover:border-cell-${

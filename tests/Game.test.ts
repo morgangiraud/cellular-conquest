@@ -18,8 +18,6 @@ describe("Grid", () => {
       const grid = new Grid(size, initStates);
 
       const territories = grid.computeTerritories(size, initStates);
-      //   console.log(initStates);
-      //   console.log(territories);
 
       // Check that the top third is TA
       for (let i = 0; i < size / 3; i++) {
@@ -59,8 +57,6 @@ describe("Grid", () => {
       ];
       const grid = new Grid(size, initStates);
       const territories = grid.computeTerritories(size, initStates);
-      //   console.log(initStates);
-      //   console.log(territories);
 
       // Check that the middle third is Territory.EMPTY
       for (let i = 0; i < size; i++) {
@@ -86,8 +82,6 @@ describe("Grid", () => {
       ];
       const grid = new Grid(size, initStates);
       const territories = grid.computeTerritories(size, initStates);
-      //   console.log(initStates);
-      //   console.log(territories);
 
       // Check that the middle third is Territory.EMPTY
       for (let i = 0; i < size; i++) {

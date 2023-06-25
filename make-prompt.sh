@@ -66,9 +66,9 @@ echo "---" >> prompt.txt
 echo "" >> prompt.txt
 
 # Adding GameContext context
-echo "src/GameContext.tsx" >> prompt.txt
+echo "src/app/contexts/GameContext.tsx" >> prompt.txt
 echo '```' >> prompt.txt
-cat src/GameContext.tsx >> prompt.txt
+cat src/app/contexts/GameContext.tsx >> prompt.txt
 echo '```' >> prompt.txt
 
 echo "" >> prompt.txt
@@ -106,19 +106,9 @@ echo "---" >> prompt.txt
 echo "" >> prompt.txt
 
 # Adding Grid component
-echo "src/components/GridView.tsx" >> prompt.txt
+echo "src/app/components/GridView.tsx" >> prompt.txt
 echo '```' >> prompt.txt
-cat src/components/GridView.tsx >> prompt.txt
-echo '```' >> prompt.txt
-
-echo "" >> prompt.txt
-echo "---" >> prompt.txt
-echo "" >> prompt.txt
-
-# Adding Row component
-echo "src/components/Row.tsx" >> prompt.txt
-echo '```' >> prompt.txt
-cat src/components/Row.tsx >> prompt.txt
+cat src/app/components/GridView.tsx >> prompt.txt
 echo '```' >> prompt.txt
 
 echo "" >> prompt.txt
@@ -126,9 +116,9 @@ echo "---" >> prompt.txt
 echo "" >> prompt.txt
 
 # Adding Cell component
-echo "src/components/CellView.tsx" >> prompt.txt
+echo "src/app/components/CellView.tsx" >> prompt.txt
 echo '```' >> prompt.txt
-cat src/components/CellView.tsx >> prompt.txt
+cat src/app/components/CellView.tsx >> prompt.txt
 echo '```' >> prompt.txt
 
 echo '------[]------' >> prompt.txt
