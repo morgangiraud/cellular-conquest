@@ -45,11 +45,10 @@ This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-opti
 
 inspiration: https://2048game.com/
 
-- multiplayer:
+- multiplayer
   - forbid the capacity to play over another player move
-- UI
-  - signup/signin popup
-  - improve leaderboard style
+- Idea
+  - implement the real time game mode
 - share
 
 ### Colors
