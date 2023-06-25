@@ -70,7 +70,7 @@ export default function Game() {
 
   return (
     <>
-      <h2 className="my-4 text-center text-2xl font-extrabold text-gray-900">
+      <h2 className="flex items-center justify-center my-4 text-center text-2xl font-extrabold text-gray-900">
         Offline mode
       </h2>
       <GridView
@@ -82,25 +82,30 @@ export default function Game() {
         handleCellClick={handleCellClick}
       />
 
-      {/* <div className="relative my-1">
-          <DashedLine
-            strokeWidth={2}
-            strokeColor="var(--other)"
-            fillPercentage={((nbGameStateUpdate / NB_UPDATE_PER_TURN) * 100) | 0}
-          />
-        </div> */}
+      <div className="max-w-[300px] md:max-w-sm lg:max-w-md mx-auto h-4 bg-gray-200 rounded-full my-4 overflow-hidden">
+        <div
+          style={{
+            width: `${
+              ((nbGameStateUpdate === 0 ? 1 : nbGameStateUpdate) /
+                NB_UPDATE_PER_TURN) *
+              100
+            }%`,
+          }}
+          className={`h-full text-xs text-center text-white ${
+            nbGameStateUpdate === 0
+              ? "bg-other border-r-2 border-dashed border-blue-500"
+              : "bg-blue-500"
+          } rounded-full`}
+        >
+          {nbGameStateUpdate}/{NB_UPDATE_PER_TURN}
+        </div>
+      </div>
 
-      <p
-        className={`text-center text-xl font-semibold m-1 ${
-          gameState === GameState.PLAYER_A ? "" : ""
-        }`}
-      >
-        {statusText()}
-      </p>
+      <p className={`text-center text-xl font-semibold m-1`}>{statusText()}</p>
 
       <div className="flex justify-center">
-        {gameState === GameState.PLAYER_A ||
-        gameState === GameState.PLAYER_B ? (
+        {(gameState === GameState.PLAYER_A ||
+          gameState === GameState.PLAYER_B) && (
           <Button
             className="mx-auto"
             variant="contained"
@@ -110,9 +115,10 @@ export default function Game() {
             Validate your moves{" "}
             {moves[gameState === GameState.PLAYER_A ? 0 : 1].length} / 5
           </Button>
-        ) : (
-          <Loader />
         )}
+        {(gameState === GameState.PLAYER_A_WAITING ||
+          gameState === GameState.PLAYER_B_WAITING ||
+          gameState === GameState.GAME_OF_LIFE) && <Loader />}
         {gameState === GameState.END && (
           <Button variant="contained" onClick={restart}>
             Restart

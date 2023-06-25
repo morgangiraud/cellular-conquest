@@ -22,7 +22,7 @@ export default function AboutModal() {
         variant="contained"
         onClick={() => setIsOpen(true)}
       >
-        Help
+        ?
       </Button>
       {isOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50">

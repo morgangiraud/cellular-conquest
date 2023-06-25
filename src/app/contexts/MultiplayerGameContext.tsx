@@ -260,8 +260,22 @@ export const MultiplayerGameContextProvider = ({
       setNextDiffMap(undefined);
       let nbIter = 0;
       const interval = setInterval(function () {
-        const winState = updateGameState();
+        if (nbIter >= NB_UPDATE_PER_TURN) {
+          clearInterval(interval);
 
+          setNextDiffMap(
+            computeDiffMap(game.getCellStates(), game.grid.computeNextStates())
+          );
+          setNbGameStateUpdate(0);
+          setGameState(
+            user.id === gameMetadata.player_a_id
+              ? GameState.PLAYER_A
+              : GameState.PLAYER_B
+          );
+          return;
+        }
+
+        const winState = updateGameState();
         if (winState != false) {
           clearInterval(interval);
 
@@ -274,10 +288,6 @@ export const MultiplayerGameContextProvider = ({
               winState === CellState.A) ||
             (user.id === gameMetadata.player_b_id && winState === CellState.B)
           ) {
-            console.log("Update games with winner_id: ", {
-              user,
-              gameMetadata,
-            });
             supabase
               .from("games")
               .update({ winner_id: user.id })
@@ -286,21 +296,6 @@ export const MultiplayerGameContextProvider = ({
                 console.log("call made", { val });
               });
           }
-          return;
-        }
-
-        if (nbIter > NB_UPDATE_PER_TURN) {
-          clearInterval(interval);
-
-          setNextDiffMap(
-            computeDiffMap(game.getCellStates(), game.grid.computeNextStates())
-          );
-          setNbGameStateUpdate(0);
-          setGameState(
-            user.id === gameMetadata.player_a_id
-              ? GameState.PLAYER_A
-              : GameState.PLAYER_B
-          );
           return;
         }
 

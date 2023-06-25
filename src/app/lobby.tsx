@@ -9,7 +9,6 @@ import Button from "./components/Button";
 import type { Database } from "@/lib/database.types";
 import { debugLog } from "@/utils";
 import { LobbyGameStartPayload } from "@/types/supabase";
-import { debug } from "console";
 
 const PRESENCE_KEY = "ceco-lobby";
 interface LobbyProps {

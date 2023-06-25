@@ -73,6 +73,9 @@ export default function MultiplayerGame({
 
   return (
     <>
+      <h2 className="my-4 text-center text-2xl font-extrabold text-gray-900">
+        Online mode
+      </h2>
       <GridView
         size={size}
         fortressCfg={fortressCfg}
