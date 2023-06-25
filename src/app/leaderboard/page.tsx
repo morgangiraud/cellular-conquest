@@ -6,7 +6,6 @@ import type { Database } from "@/lib/database.types";
 import { createClient } from "@supabase/supabase-js";
 
 export default async function Home() {
-  console.log(process.env.SUPABASE_SERVICE_ROLE_KEY);
   const rootSupabase = createClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL ?? "",
     process.env.SUPABASE_SERVICE_ROLE_KEY ?? ""
@@ -21,7 +20,7 @@ export default async function Home() {
     .order("score", { ascending: false })
     .limit(50);
 
-  console.log({ data, error });
+  if (error) console.error({ error });
 
   const userResponse = await supabase.auth.getUser();
   const user = userResponse.data.user;

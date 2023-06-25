@@ -18,8 +18,6 @@ interface LobbyProps {
 }
 
 export default function Lobby({ sessionUserId, startGame }: LobbyProps) {
-  debugLog("Rendering Lobby");
-
   const supabase = createClientComponentClient<Database>();
 
   const [userState, setUserState] = useState<string[]>([]);
@@ -47,20 +45,6 @@ export default function Lobby({ sessionUserId, startGame }: LobbyProps) {
         setUserState(userIds);
       }
     });
-
-    // lobbyChannel.on("presence", { event: "join" }, ({ newPresences }) => {
-    //   console.log(
-    //     "New users have joined: ",
-    //     newPresences.map((p) => p.user_id)
-    //   );
-    // });
-
-    // lobbyChannel.on("presence", { event: "leave" }, ({ leftPresences }) => {
-    //   console.log(
-    //     "Users have left: ",
-    //     leftPresences.map((p) => p.user_id)
-    //   );
-    // });
 
     lobbyChannel.on("broadcast", { event: "game_start" }, (event) => {
       const payload = event.payload as LobbyGameStartPayload;
