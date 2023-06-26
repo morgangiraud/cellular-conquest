@@ -27,7 +27,7 @@ export interface GameContextProps {
   moves: [string[], string[]];
   nbGameStateUpdate: number;
   winner: Player | undefined;
-  handleCellClick: (i: number, j: number) => boolean;
+  handleCellClick: (i: number, j: number) => void;
   handleValidation: () => void;
   restart: () => void;
 }
@@ -110,8 +110,6 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
         newGrid.computeNextStates()
       )
     );
-
-    return false;
   }, []);
 
   const onValidation = useCallback(
@@ -139,10 +137,10 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
   ////////////////////////////////
   const handleCellClick = useCallback(
     (i: number, j: number) => {
-      if (!game) return false;
-      if (!cells) return false;
+      if (!game) return;
+      if (!cells) return;
 
-      return onMove({
+      onMove({
         player: gameState,
         move: [i, j],
         moves,
