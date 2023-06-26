@@ -106,7 +106,6 @@ export const MultiplayerGameContextProvider = ({
       if (!isMoveDone && playerMoves.length === NB_MAX_MOVES) return true;
 
       let newCell: Cell;
-
       let newMoves: [string[], string[]] = [[...oldMoves[0]], [...oldMoves[1]]];
       if (isMoveDone) {
         newMoves[playerIdx] = playerMoves.filter((move) => move !== moveHash);

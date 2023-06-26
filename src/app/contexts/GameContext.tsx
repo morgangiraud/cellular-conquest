@@ -77,13 +77,6 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
     if (!isMoveDone && playerMoves.length === NB_MAX_MOVES) return true;
 
     let newCell: Cell;
-
-    console.log(
-      "frozen",
-      gameFrozenCells[payload.move[0]][payload.move[1]].clone()
-    );
-    console.log("old", oldCells[payload.move[0]][payload.move[1]].clone());
-    console.log({ isMoveDone });
     let newMoves: [string[], string[]] = [[...oldMoves[0]], [...oldMoves[1]]];
     if (isMoveDone) {
       newMoves[playerIdx] = playerMoves.filter((move) => move !== moveHash);
@@ -102,7 +95,6 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
           eventPlayer === GameState.PLAYER_A ? Territory.A : Territory.B;
       }
     }
-    console.log({ newCell });
     oldCells[payload.move[0]][payload.move[1]] = newCell;
 
     setMoves(newMoves);
