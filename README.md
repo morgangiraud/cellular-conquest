@@ -46,7 +46,8 @@ This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-opti
 inspiration: https://2048game.com/
 
 - multiplayer
-  - forbid the capacity to play over another player move
+  - check maximumReached for handleCellClick function
+  - Check `computeTerritory` function at the limit
 - Idea
   - implement the real time game mode
 - share

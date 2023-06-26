@@ -18,6 +18,7 @@ import {
   NB_MAX_MOVES,
   NB_UPDATE_PER_TURN,
   Player,
+  Territory,
 } from "@/constants";
 import { Cell, Game, Grid } from "@/Game";
 import { computeDiffMap, debugLog } from "@/utils";
@@ -96,21 +97,33 @@ export const MultiplayerGameContextProvider = ({
       const oldCells = payload.cells.map((row) =>
         row.map((cell) => new Cell(cell.state, cell.territory))
       );
+      const gameFrozenCells = payload.game_frozen_cells.map((row) =>
+        row.map((cell) => new Cell(cell.state, cell.territory))
+      );
 
       const playerMoves = oldMoves[playerIdx];
       const isMoveDone = playerMoves.indexOf(moveHash) !== -1;
       if (!isMoveDone && playerMoves.length === NB_MAX_MOVES) return true;
 
-      const newCell = oldCells[payload.move[0]][payload.move[1]].clone();
+      let newCell: Cell;
 
       let newMoves: [string[], string[]] = [[...oldMoves[0]], [...oldMoves[1]]];
       if (isMoveDone) {
         newMoves[playerIdx] = playerMoves.filter((move) => move !== moveHash);
-        newCell.state = CellState.EMPTY;
+        newCell = gameFrozenCells[payload.move[0]][payload.move[1]].clone();
       } else {
         newMoves[playerIdx] = [...playerMoves, moveHash];
-        newCell.state =
-          eventPlayer === GameState.PLAYER_A ? CellState.A : CellState.B;
+        newCell = oldCells[payload.move[0]][payload.move[1]].clone();
+        if (newCell.state === CellState.EMPTY) {
+          newCell.state =
+            eventPlayer === GameState.PLAYER_A ? CellState.A : CellState.B;
+          newCell.territory =
+            eventPlayer === GameState.PLAYER_A ? Territory.A : Territory.B;
+        } else {
+          newCell.state = CellState.EMPTY;
+          newCell.territory =
+            eventPlayer === GameState.PLAYER_A ? Territory.A : Territory.B;
+        }
       }
       oldCells[payload.move[0]][payload.move[1]] = newCell;
 
@@ -165,8 +178,9 @@ export const MultiplayerGameContextProvider = ({
   ////////////////////////////////
   const handleCellClick = useCallback(
     (i: number, j: number) => {
-      if (gameChannel === undefined) return false;
-      if (cells === undefined) return false;
+      if (!game) return false;
+      if (!gameChannel) return false;
+      if (!cells) return false;
 
       gameChannel.send({
         type: REALTIME_LISTEN_TYPES.BROADCAST,
@@ -176,12 +190,13 @@ export const MultiplayerGameContextProvider = ({
           move: [i, j],
           moves,
           cells,
+          game_frozen_cells: game.grid.cells,
         },
       } as GameMoveEvent);
 
       return false;
     },
-    [gameState, gameChannel, moves, cells]
+    [game, gameState, gameChannel, moves, cells]
   );
 
   const handleValidation = useCallback(() => {
@@ -252,7 +267,7 @@ export const MultiplayerGameContextProvider = ({
     if (gameState === GameState.GAME_OF_LIFE) {
       const updateGameState = () => {
         game.grid.update();
-        setCells([...game.grid.cells]);
+        setCells(game.grid.cells.map((row) => row.map((cell) => cell.clone())));
 
         return game.checkWin();
       };
