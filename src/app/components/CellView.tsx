@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { MouseEventHandler, useState } from "react";
 
-import { CellState, Diff, NB_MAX_MOVES, Territory } from "@/constants";
+import { CellState, Diff, Territory } from "@/constants";
 
 import { Cell } from "@/Game";
 import { classNames } from "@/utils";
@@ -14,7 +14,7 @@ interface CellViewProps {
   cell: Cell;
   diff: Diff;
   canInteract: boolean;
-  onClick: () => boolean;
+  onClick: MouseEventHandler<HTMLDivElement>;
   isFortress?: boolean;
   className?: string;
 }
@@ -27,18 +27,13 @@ const CellView = ({
   isFortress = false,
   className = "",
 }: CellViewProps) => {
-  const [showTooltip, setShowTooltip] = useState(false);
   const [isBouncing, setIsBouncing] = useState(false);
 
-  const handleClick = () => {
-    const maximumReached = onClick();
-    if (maximumReached) {
-      setShowTooltip(true);
-      setTimeout(() => setShowTooltip(false), 1000);
-    } else {
-      setIsBouncing(true);
-      setTimeout(() => setIsBouncing(false), 300);
-    }
+  const handleClick: MouseEventHandler<HTMLDivElement> = (ev) => {
+    onClick(ev);
+
+    setIsBouncing(true);
+    setTimeout(() => setIsBouncing(false), 300);
   };
 
   let bgClass = `bg-cell-${cell.state}`;
@@ -87,12 +82,6 @@ const CellView = ({
             }
           >
             <Fort />
-          </div>
-        )}
-        {showTooltip && (
-          <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 w-48 p-2 bg-black text-white text-xs rounded">
-            Maximum {NB_MAX_MOVES} squares can be selected. Unselect a square
-            first.
           </div>
         )}
       </div>

@@ -82,3 +82,37 @@ body {
   -webkit-animation: pop 0.2s;
   animation: pop 0.2s;
 }
+
+@keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeInDown {
+  animation-name: fadeInDown;
+  animation-duration: 0.5s;
+  animation-fill-mode: both;
+}
+
+@keyframes fadeOutUp {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+.animate-fadeOutUp {
+  animation-name: fadeOutUp;
+  animation-duration: 0.5s;
+  animation-fill-mode: both;
+}

@@ -2,7 +2,13 @@
 
 import Button from "@/app/components/Button";
 import GridView from "./components/GridView";
-import { CellState, GameState, NB_UPDATE_PER_TURN, Player } from "@/constants";
+import {
+  CellState,
+  GameState,
+  NB_MAX_MOVES,
+  NB_UPDATE_PER_TURN,
+  Player,
+} from "@/constants";
 import { useEffect } from "react";
 import Loader from "@/app/components/Loader";
 import DashedLine from "@/app/svgs/DashedLine";
@@ -82,6 +88,7 @@ export default function MultiplayerGame({
         gameState={gameState}
         cells={cells}
         nextDiffMap={nextDiffMap}
+        moves={moves}
         handleCellClick={handleCellClick}
       />
 
@@ -122,7 +129,8 @@ export default function MultiplayerGame({
             onClick={handleValidation}
           >
             Validate your moves{" "}
-            {moves[gameState === GameState.PLAYER_A ? 0 : 1].length} / 5
+            {moves[gameState === GameState.PLAYER_A ? 0 : 1].length} /{" "}
+            {NB_MAX_MOVES}
           </Button>
         )}
 

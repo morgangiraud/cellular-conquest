@@ -177,9 +177,9 @@ export const MultiplayerGameContextProvider = ({
   ////////////////////////////////
   const handleCellClick = useCallback(
     (i: number, j: number) => {
-      if (!game) return false;
-      if (!gameChannel) return false;
-      if (!cells) return false;
+      if (!game) return;
+      if (!gameChannel) return;
+      if (!cells) return;
 
       gameChannel.send({
         type: REALTIME_LISTEN_TYPES.BROADCAST,
@@ -192,8 +192,6 @@ export const MultiplayerGameContextProvider = ({
           game_frozen_cells: game.grid.cells,
         },
       } as GameMoveEvent);
-
-      return false;
     },
     [game, gameState, gameChannel, moves, cells]
   );

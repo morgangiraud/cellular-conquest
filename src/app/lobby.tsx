@@ -50,7 +50,6 @@ export default function Lobby({ sessionUserId, startGame }: LobbyProps) {
 
       const players = payload["players"];
       if (players.indexOf(sessionUserId) != -1) {
-        debugLog("Game should start: ", payload);
         const gameId = payload["game_id"];
         startGame(gameId);
       }
