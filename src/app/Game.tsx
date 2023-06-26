@@ -28,6 +28,9 @@ export default function Game() {
 
     const handleKeyDown = (ev: KeyboardEvent) => {
       if (ev.key === " ") {
+        ev.stopPropagation();
+        ev.preventDefault();
+
         handleValidation();
       }
     };

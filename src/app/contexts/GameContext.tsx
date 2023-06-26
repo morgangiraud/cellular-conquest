@@ -1,12 +1,6 @@
 "use client";
 
-import React, {
-  createContext,
-  useState,
-  useEffect,
-  useCallback,
-  use,
-} from "react";
+import React, { createContext, useState, useEffect, useCallback } from "react";
 
 import {
   BOARD_SIZE,
@@ -18,6 +12,7 @@ import {
   NB_MAX_MOVES,
   NB_UPDATE_PER_TURN,
   Player,
+  Territory,
 } from "@/constants";
 import { Cell, Game, Grid } from "@/Game";
 import { computeDiffMap, debugLog } from "@/utils";
@@ -75,21 +70,30 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
     const moveHash = payload.move.join("-");
     const oldMoves = payload.moves;
     const oldCells = payload.cells;
+    const gameFrozenCells = payload.game_frozen_cells;
 
     const playerMoves = oldMoves[playerIdx];
     const isMoveDone = playerMoves.indexOf(moveHash) !== -1;
     if (!isMoveDone && playerMoves.length === NB_MAX_MOVES) return true;
 
-    const newCell = oldCells[payload.move[0]][payload.move[1]].clone();
-
+    let newCell: Cell;
     let newMoves: [string[], string[]] = [[...oldMoves[0]], [...oldMoves[1]]];
     if (isMoveDone) {
       newMoves[playerIdx] = playerMoves.filter((move) => move !== moveHash);
-      newCell.state = CellState.EMPTY;
+      newCell = gameFrozenCells[payload.move[0]][payload.move[1]].clone();
     } else {
       newMoves[playerIdx] = [...playerMoves, moveHash];
-      newCell.state =
-        eventPlayer === GameState.PLAYER_A ? CellState.A : CellState.B;
+      newCell = oldCells[payload.move[0]][payload.move[1]].clone();
+      if (newCell.state === CellState.EMPTY) {
+        newCell.state =
+          eventPlayer === GameState.PLAYER_A ? CellState.A : CellState.B;
+        newCell.territory =
+          eventPlayer === GameState.PLAYER_A ? Territory.A : Territory.B;
+      } else {
+        newCell.state = CellState.EMPTY;
+        newCell.territory =
+          eventPlayer === GameState.PLAYER_A ? Territory.A : Territory.B;
+      }
     }
     oldCells[payload.move[0]][payload.move[1]] = newCell;
 
@@ -112,7 +116,7 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
 
   const onValidation = useCallback(
     (payload: GameValidationPayload) => {
-      if (game === undefined) return;
+      if (!game) return;
       debugLog("GameValidationPayload: ", payload);
 
       const eventPlayer = payload.player;
@@ -135,14 +139,18 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
   ////////////////////////////////
   const handleCellClick = useCallback(
     (i: number, j: number) => {
+      if (!game) return false;
+      if (!cells) return false;
+
       return onMove({
         player: gameState,
         move: [i, j],
         moves,
         cells,
+        game_frozen_cells: game.grid.cells,
       } as GameMovePayload);
     },
-    [gameState, onMove, moves, cells]
+    [game, gameState, onMove, moves, cells]
   );
 
   const handleValidation = useCallback(() => {
@@ -190,7 +198,7 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
     if (gameState === GameState.GAME_OF_LIFE) {
       const updateGameState = () => {
         game.grid.update();
-        setCells([...game.grid.cells]);
+        setCells(game.grid.cells.map((row) => row.map((cell) => cell.clone())));
 
         return game.checkWin();
       };

@@ -54,11 +54,19 @@ export class Grid {
           continue;
         }
 
-        // Check for top and bottom thirds
-        if (i < Math.ceil((4 * size) / 9)) {
-          cellTerritories[i][j] = Territory.A;
-        } else if (i >= Math.floor((5 * size) / 9)) {
-          cellTerritories[i][j] = Territory.B;
+        // Check for top and bottom
+        if (size % 2 === 0) {
+          if (i < size / 2 - 1) {
+            cellTerritories[i][j] = Territory.A;
+          } else if (i >= size / 2 + 1) {
+            cellTerritories[i][j] = Territory.B;
+          }
+        } else {
+          if (i < (size - 1) / 2) {
+            cellTerritories[i][j] = Territory.A;
+          } else if (i > (size - 1) / 2) {
+            cellTerritories[i][j] = Territory.B;
+          }
         }
 
         // Check for neighbors of A and B
@@ -68,7 +76,10 @@ export class Grid {
             y <= Math.min(j + 1, size - 1);
             y++
           ) {
-            if ((x !== i || y !== j) && cellStates[x][y] === CellState.A) {
+            if (x === i && y === j) continue;
+            if (cellTerritories[i][j] === Territory.AB) continue;
+
+            if (cellStates[x][y] === CellState.A) {
               if (cellTerritories[i][j] === Territory.B) {
                 cellTerritories[i][j] = Territory.AB;
               } else {
@@ -76,7 +87,7 @@ export class Grid {
               }
             }
 
-            if ((x !== i || y !== j) && cellStates[x][y] === CellState.B) {
+            if (cellStates[x][y] === CellState.B) {
               if (cellTerritories[i][j] === Territory.A) {
                 cellTerritories[i][j] = Territory.AB;
               } else {

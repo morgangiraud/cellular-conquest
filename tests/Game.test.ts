@@ -13,36 +13,52 @@ const TE = Territory.EMPTY;
 describe("Grid", () => {
   describe("computeTerritories", () => {
     it("should correctly assign territories based on cell states", () => {
-      const size = 6; // Make sure this is a multiple of 3 for easy testing
+      const size = 5;
       const initStates: CellState[][] = Array(size).fill(Array(size).fill(CE));
       const grid = new Grid(size, initStates);
 
       const territories = grid.computeTerritories(size, initStates);
 
-      // Check that the top third is TA
-      for (let i = 0; i < size / 3; i++) {
+      const expectedTerritories = [
+        [TA, TA, TA, TA, TA],
+        [TA, TA, CA, TA, TA],
+        [TE, TE, TE, TE, TE],
+        [TB, TB, TB, TB, TB],
+        [TB, TB, TB, TB, TB],
+      ];
+
+      for (let i = 0; i < size; i++) {
         for (let j = 0; j < size; j++) {
-          expect(territories[i][j]).toEqual(TA);
+          expect(territories[i][j]).toEqual(expectedTerritories[i][j]);
         }
       }
+    });
 
-      // Check that the bottom third is TB
-      for (let i = (size / 3) * 2; i < size; i++) {
-        for (let j = 0; j < size; j++) {
-          expect(territories[i][j]).toEqual(TB);
-        }
-      }
+    it("should correctly assign territories based on cell states", () => {
+      const size = 6;
+      const initStates: CellState[][] = Array(size).fill(Array(size).fill(CE));
+      const grid = new Grid(size, initStates);
 
-      // Check that the middle third is Territory.EMPTY
-      for (let i = size / 3; i < (size / 3) * 2; i++) {
+      const territories = grid.computeTerritories(size, initStates);
+
+      const expectedTerritories = [
+        [TA, TA, TA, TA, TA, TA],
+        [TA, TA, CA, TA, TA, TA],
+        [TE, TE, TE, TE, TE, TE],
+        [TE, TE, TE, TE, TE, TE],
+        [TB, TB, TB, TB, TB, TB],
+        [TB, TB, TB, TB, TB, TB],
+      ];
+
+      for (let i = 0; i < size; i++) {
         for (let j = 0; j < size; j++) {
-          expect(territories[i][j]).toEqual(Territory.EMPTY);
+          expect(territories[i][j]).toEqual(expectedTerritories[i][j]);
         }
       }
     });
 
     it("distant case", () => {
-      const size = 4; // Make sure this is a multiple of 3 for easy testing
+      const size = 4;
       const initStates = [
         [CA, CA, CA, CA],
         [CE, CE, CE, CE],
@@ -67,7 +83,7 @@ describe("Grid", () => {
     });
 
     it("touching case", () => {
-      const size = 4; // Make sure this is a multiple of 3 for easy testing
+      const size = 4;
       const initStates = [
         [CA, CA, CA, CA],
         [CE, CA, CA, CE],
@@ -77,8 +93,35 @@ describe("Grid", () => {
       const expectedTerritories = [
         [TA, TA, TA, TA],
         [TAB, TA, TA, TAB],
+        [TAB, TB, TB, TAB],
         [TB, TB, TB, TB],
-        [TB, TB, TB, TB],
+      ];
+      const grid = new Grid(size, initStates);
+      const territories = grid.computeTerritories(size, initStates);
+
+      // Check that the middle third is Territory.EMPTY
+      for (let i = 0; i < size; i++) {
+        for (let j = 0; j < size; j++) {
+          expect(territories[i][j]).toEqual(expectedTerritories[i][j]);
+        }
+      }
+    });
+
+    it("limit case", () => {
+      const size = 5;
+      const initStates = [
+        [CE, CE, CE, CE, CE],
+        [CE, CE, CA, CE, CE],
+        [CE, CE, CE, CE, CE],
+        [CE, CE, CB, CE, CE],
+        [CE, CE, CE, CE, CE],
+      ];
+      const expectedTerritories = [
+        [TA, TA, TA, TA, TA],
+        [TA, TA, CA, TA, TA],
+        [TE, TAB, TAB, TAB, TE],
+        [TB, TB, TB, TB, TB],
+        [TB, TB, TB, TB, TB],
       ];
       const grid = new Grid(size, initStates);
       const territories = grid.computeTerritories(size, initStates);

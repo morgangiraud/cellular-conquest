@@ -34,6 +34,7 @@ export type GameMovePayload = {
   move: [number, number];
   moves: [string[], string[]];
   cells: Cell[][];
+  game_frozen_cells: Cell[][];
 };
 
 export type GameValidationEvent = {

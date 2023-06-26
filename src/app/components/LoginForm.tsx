@@ -22,7 +22,6 @@ export default function LoginForm({ session }: { session: Session | null }) {
   };
 
   supabase.auth.onAuthStateChange((event, session) => {
-    console.log("onAuthStateChange", event, session);
     if (event == "SIGNED_IN") {
       setIsOpen(false);
       router.refresh();
