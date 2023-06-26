@@ -47,7 +47,6 @@ inspiration: https://2048game.com/
 
 - multiplayer
   - check maximumReached for handleCellClick function
-  - Check `computeTerritory` function at the limit
 - Idea
   - implement the real time game mode
 - share
