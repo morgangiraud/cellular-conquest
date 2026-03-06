@@ -39,7 +39,7 @@
 
 ## Tests
 
-- Current tests in `tests/Game.test.ts` target selected `Grid` behavior.
+- `tests/Game.test.ts` now covers territory assignment, evolution rules (`nextState`, `computeNextStates`, `update`), assignment/snapshot deep-copy semantics, and `Game` constructor/win behavior.
 - No integration coverage yet for contexts/realtime flows.
 
 ## Delivery automation
@@ -47,7 +47,7 @@
 - GitHub Actions CI workflow lives in `.github/workflows/ci.yml`.
 - Workflow triggers on `push`, `pull_request`, and manual `workflow_dispatch`.
 - CI runner uses Node.js 20 with Yarn dependency caching and deterministic install via `yarn install --frozen-lockfile`.
-- Validation sequence runs `yarn ci` followed by `yarn build`.
+- Validation sequence runs targeted engine regression tests, then `yarn ci`, then `yarn build`.
 - Concurrency cancellation is enabled per branch/ref to avoid duplicate in-flight runs.
 
 ## Runtime resilience

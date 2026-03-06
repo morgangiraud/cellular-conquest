@@ -37,3 +37,19 @@ Append only. Do not rewrite past entries; add a new entry for reversals.
 - Context: Vercel status remained failed after env-guard changes, suggesting some deployments may still have partial/invalid Supabase configuration that can fail during server-side calls.
 - Decision: Wrap server-side Supabase auth/profile calls in `try/catch` and return safe fallback UI/state instead of throwing.
 - Rationale: Prevent transient or misconfigured Supabase connectivity from blocking deployments or static generation.
+
+## 2026-03-06 - Engine regression test expansion for optimization safety
+
+- Context: Future engine optimizations could unintentionally change deterministic rule outcomes, while existing tests mostly covered territory seeding and grid cloning.
+- Decision: Expand `tests/Game.test.ts` with deterministic regression coverage for `Grid.nextState`, `Grid.computeNextStates`, `Grid.update`, `Grid.assignCells`, and `Game.checkWin` fortress boundary handling.
+- Rationale: Protect gameplay rules with behavior-level assertions so implementation-level optimization can proceed safely.
+- Consequences: Unit test scope increases slightly, but confidence in refactor safety improves.
+- Follow-up: Add context/state-machine transition tests when turn-flow logic is optimized.
+
+## 2026-03-06 - Explicit engine-risk CI gate
+
+- Context: Need faster signal on rule regressions while optimizing the game engine and preserving deterministic behavior.
+- Decision: Add a dedicated CI step that runs `yarn test --runInBand tests/Game.test.ts` before the broader `yarn ci` and build steps.
+- Rationale: Fails fast on the highest-risk engine contract while keeping full lint/type/full-test/build coverage.
+- Consequences: Engine tests run twice in CI (targeted + full suite) but improve failure diagnostics.
+- Follow-up: Split test suites by domain if test volume grows enough to require runtime optimization.
