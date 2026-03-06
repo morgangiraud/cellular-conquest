@@ -1,9 +1,11 @@
 # Cellular Conquest Memory Index
 
 ## Purpose
+
 Persistent project memory for long-running engineering work in this repository.
 
 ## Files
+
 - `architecture.md`: module map and system boundaries.
 - `data-flow.md`: runtime and event flows.
 - `risk-register.md`: active technical and product risks.
@@ -13,6 +15,7 @@ Persistent project memory for long-running engineering work in this repository.
 - `templates/worklog-entry.md`: worklog entry template.
 
 ## Update protocol
+
 - Start each new task on a dedicated branch before making repository changes.
 - Update memory files in every substantive implementation PR/session.
 - Keep stored facts current when behavior or architecture changes.
