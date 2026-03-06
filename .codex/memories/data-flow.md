@@ -36,8 +36,9 @@
 
 1. GitHub `push`, `pull_request`, or manual dispatch triggers `.github/workflows/ci.yml`.
 2. Runner checks out repository and installs dependencies from `yarn.lock`.
-3. `yarn ci` runs lint, type check, and unit tests in sequence.
-4. `yarn build` validates production build compilation in the same pipeline run.
+3. Targeted engine regression suite runs with `yarn test --runInBand tests/Game.test.ts`.
+4. `yarn ci` runs lint, type check, and full unit tests in sequence.
+5. `yarn build` validates production build compilation in the same pipeline run.
 
 ## Missing-env fallback flow
 
