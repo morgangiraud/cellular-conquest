@@ -48,6 +48,13 @@ Invoke these repo-local skills when matching work appears:
 - `$supabase-multiplayer`: auth, lobby/game channels, realtime payloads, SQL migrations/policies, DB type alignment.
 - `$ui-gameplay-iteration`: UX clarity, board interactions, game status messaging, layout, accessibility, guidance UI.
 
+## Workflow Defaults
+- Start every new task on a dedicated branch before editing files.
+- Update `.codex/memories` whenever architecture, data flow, risks, or major decisions change.
+- Keep all stored project information current when related code or behavior changes.
+- Run all applicable checks before handoff (`yarn lint`, `yarn typecheck`, `yarn test`, plus targeted checks for the touched area).
+- If a check cannot run, explicitly report what is blocked and why.
+
 ## Contribution Rules
 - Keep engine logic deterministic and test-backed.
 - Keep UI concerns in components/styles and rule concerns in engine/context files.
@@ -58,7 +65,7 @@ Invoke these repo-local skills when matching work appears:
 ## Testing Expectations
 - For rule/engine changes, run targeted game tests first.
 - For multiplayer changes, verify channel payload shape and lifecycle behavior.
-- Before handoff, run `yarn typecheck` and `yarn test` when dependencies are installed.
+- Before handoff, run all applicable checks when dependencies are installed.
 - If dependencies are missing, report exactly what could not be executed.
 
 ## Memory Protocol
