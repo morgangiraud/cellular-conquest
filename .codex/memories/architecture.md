@@ -49,3 +49,9 @@
 - CI runner uses Node.js 20 with Yarn dependency caching and deterministic install via `yarn install --frozen-lockfile`.
 - Validation sequence runs `yarn ci` followed by `yarn build`.
 - Concurrency cancellation is enabled per branch/ref to avoid duplicate in-flight runs.
+
+## Runtime resilience
+
+- Server-rendered auth/leaderboard entry points now guard against missing Supabase environment variables.
+- `/` and nav login fallback to offline/single-player behavior when Supabase client env is absent.
+- `/leaderboard` renders an unavailable message when required Supabase env values are not configured.

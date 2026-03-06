@@ -38,3 +38,10 @@
 2. Runner checks out repository and installs dependencies from `yarn.lock`.
 3. `yarn ci` runs lint, type check, and unit tests in sequence.
 4. `yarn build` validates production build compilation in the same pipeline run.
+
+## Missing-env fallback flow
+
+1. Server components check for required Supabase env vars before constructing Supabase clients.
+2. If vars are missing on `/`, page returns single-player mode (`user = null`) instead of attempting auth lookup.
+3. If vars are missing in nav login, login control is not rendered.
+4. If vars are missing on `/leaderboard`, page returns an availability message and skips database queries.

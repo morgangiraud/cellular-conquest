@@ -25,3 +25,9 @@ Append only. Do not rewrite past entries; add a new entry for reversals.
 - Context: Lint failed because Prettier checks covered repository docs/memory files in addition to source files, and existing drift was spread across `.codex/*` and `AGENTS.md`.
 - Decision: Apply `yarn format` at repository scope (not source-only) so CI lint and local lint enforce one consistent formatting baseline.
 - Rationale: Avoid recurring false-negative lint failures from non-source files and keep tooling behavior predictable.
+
+## 2026-03-06 - Build-safe Supabase env handling
+
+- Context: CI/Vercel builds failed while prerendering `/` and `/leaderboard` because Supabase env vars were missing and server components instantiated clients unconditionally.
+- Decision: Add server-side env guards and fallback rendering paths rather than requiring CI secrets for build-only validation.
+- Rationale: Keeps build deterministic across environments and preserves offline/single-player availability when Supabase is not configured.

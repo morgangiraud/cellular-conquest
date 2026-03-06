@@ -5,6 +5,15 @@ import LoginForm from "./LoginForm";
 import type { Database } from "@/lib/database.types";
 
 export default async function Login() {
+  const hasSupabaseClientEnv = Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  );
+
+  if (!hasSupabaseClientEnv) {
+    return null;
+  }
+
   const supabase = createServerComponentClient<Database>({ cookies });
 
   const {
