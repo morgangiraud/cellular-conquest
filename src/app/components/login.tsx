@@ -14,11 +14,16 @@ export default async function Login() {
     return null;
   }
 
-  const supabase = createServerComponentClient<Database>({ cookies });
+  try {
+    const supabase = createServerComponentClient<Database>({ cookies });
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
 
-  return <LoginForm session={session} />;
+    return <LoginForm session={session} />;
+  } catch (error) {
+    console.error("Unable to resolve Supabase session for login.", error);
+    return null;
+  }
 }

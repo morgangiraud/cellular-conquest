@@ -55,3 +55,4 @@
 - Server-rendered auth/leaderboard entry points now guard against missing Supabase environment variables.
 - `/` and nav login fallback to offline/single-player behavior when Supabase client env is absent.
 - `/leaderboard` renders an unavailable message when required Supabase env values are not configured.
+- Server components wrap Supabase client/session/data calls in `try/catch` to avoid build-time crashes when env values are present but invalid or unreachable.

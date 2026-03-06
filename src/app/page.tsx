@@ -15,13 +15,18 @@ export default async function Home() {
     return <MultiPlayerSwitch user={null} />;
   }
 
-  const supabase = createServerComponentClient<Database>({
-    cookies,
-  });
+  try {
+    const supabase = createServerComponentClient<Database>({
+      cookies,
+    });
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-  return <MultiPlayerSwitch user={user} />;
+    return <MultiPlayerSwitch user={user} />;
+  } catch (error) {
+    console.error("Unable to resolve Supabase user context.", error);
+    return <MultiPlayerSwitch user={null} />;
+  }
 }

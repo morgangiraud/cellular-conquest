@@ -45,3 +45,4 @@
 2. If vars are missing on `/`, page returns single-player mode (`user = null`) instead of attempting auth lookup.
 3. If vars are missing in nav login, login control is not rendered.
 4. If vars are missing on `/leaderboard`, page returns an availability message and skips database queries.
+5. If Supabase calls throw during auth/profile access, components catch errors and return the same safe fallback rendering.

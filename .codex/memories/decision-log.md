@@ -31,3 +31,9 @@ Append only. Do not rewrite past entries; add a new entry for reversals.
 - Context: CI/Vercel builds failed while prerendering `/` and `/leaderboard` because Supabase env vars were missing and server components instantiated clients unconditionally.
 - Decision: Add server-side env guards and fallback rendering paths rather than requiring CI secrets for build-only validation.
 - Rationale: Keeps build deterministic across environments and preserves offline/single-player availability when Supabase is not configured.
+
+## 2026-03-06 - Supabase runtime failure fallback
+
+- Context: Vercel status remained failed after env-guard changes, suggesting some deployments may still have partial/invalid Supabase configuration that can fail during server-side calls.
+- Decision: Wrap server-side Supabase auth/profile calls in `try/catch` and return safe fallback UI/state instead of throwing.
+- Rationale: Prevent transient or misconfigured Supabase connectivity from blocking deployments or static generation.
