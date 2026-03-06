@@ -30,6 +30,7 @@
 body {
   color: black;
   background: var(--background);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 @keyframes bounce {

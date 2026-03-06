@@ -12,18 +12,27 @@
 ## Multiplayer lobby flow
 
 1. Authenticated user enters `Lobby`.
-2. Client subscribes to `lobby` channel with presence tracking.
-3. Initiator inserts game row in `games` table.
-4. Initiator broadcasts `game_start` with `game_id` and players.
-5. Both players load metadata and mount multiplayer context.
+2. Client Supabase instance is created through `getSupabaseBrowserClient()`.
+3. Client subscribes to `lobby` channel with presence tracking.
+4. Initiator inserts game row in `games` table.
+5. Initiator broadcasts `game_start` with numeric `game_id` and players.
+6. Both players load metadata and mount multiplayer context.
+
+## Auth/session flow
+
+1. Server components create Supabase clients via `getSupabaseServerClient()` (async `cookies()` compatible with Next 16).
+2. Route handler `/auth/callback` exchanges auth code using `createServerClient` and writes updated cookies onto the redirect response.
+3. `src/proxy.ts` uses `createServerClient` with request/response cookie bridging to keep sessions refreshed.
+4. Client components share a singleton browser client via `getSupabaseBrowserClient()`.
 
 ## Multiplayer game flow
 
 1. Client subscribes to `game-{id}` channel for `move` and `validation`.
-2. On `move`, receiver updates staged cells, move list, and diff preview.
-3. On `validation`, receiver updates validation flags and turn state.
-4. When both validated, each client runs local simulation loop.
-5. Winning client updates `games.winner_id`; DB trigger updates ELO scores.
+2. Broadcast payloads now use string literal event type `"broadcast"` in sync with latest Supabase realtime typings.
+3. On `move`, receiver updates staged cells, move list, and diff preview.
+4. On `validation`, receiver updates validation flags and turn state.
+5. When both validated, each client runs local simulation loop.
+6. Winning client updates `games.winner_id`; DB trigger updates ELO scores.
 
 ## Persistence boundaries
 

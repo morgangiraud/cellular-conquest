@@ -1,33 +1,41 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import type { Session } from "@supabase/auth-helpers-nextjs";
+import type { Session } from "@supabase/supabase-js";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "./Button";
 import { Multi } from "../svgs/Multi";
+import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 
 export default function LoginForm({ session }: { session: Session | null }) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
-  const supabase = createClientComponentClient();
+  const supabase = getSupabaseBrowserClient();
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     router.refresh();
   };
 
-  supabase.auth.onAuthStateChange((event, session) => {
-    if (event == "SIGNED_IN") {
-      setIsOpen(false);
-      router.refresh();
-      router.push("/");
-    }
-  });
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_IN") {
+        setIsOpen(false);
+        router.refresh();
+        router.push("/");
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [router, supabase.auth]);
 
   return session ? (
     <Button className="ml-4" variant="contained" onClick={handleSignOut}>

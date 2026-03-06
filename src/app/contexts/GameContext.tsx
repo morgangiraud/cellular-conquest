@@ -6,7 +6,6 @@ import {
   BOARD_SIZE,
   CellState,
   DiffMap,
-  fortressCfg,
   FRAME_RATE,
   GameState,
   NB_MAX_MOVES,
@@ -14,13 +13,14 @@ import {
   Player,
   Territory,
 } from "@/constants";
+import type { fortressCfg as FortressCfg } from "@/constants";
 import { Cell, Game, Grid } from "@/Game";
 import { computeDiffMap, debugLog } from "@/utils";
 import { GameMovePayload, GameValidationPayload } from "@/types/supabase";
 
 export interface GameContextProps {
   size: number;
-  fortressCfg: fortressCfg;
+  fortressCfg: FortressCfg;
   gameState: GameState | undefined;
   cells: Cell[][] | undefined;
   nextDiffMap: DiffMap | undefined;
@@ -33,7 +33,7 @@ export interface GameContextProps {
 }
 
 export const GameContext = createContext<GameContextProps | undefined>(
-  undefined
+  undefined,
 );
 
 interface GameContextProviderProps {
@@ -41,7 +41,7 @@ interface GameContextProviderProps {
 }
 
 const size = BOARD_SIZE;
-const fortressCfg: fortressCfg = {
+const fortressCfg: FortressCfg = {
   a: { x: (size / 2) | 0, y: 1, width: 1, height: 1 },
   b: { x: (size / 2) | 0, y: size - 2, width: 1, height: 1 },
 };
@@ -102,13 +102,13 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
 
     const newGrid = new Grid(
       size,
-      oldCells.map((cellRow) => cellRow.map((cell) => cell.state))
+      oldCells.map((cellRow) => cellRow.map((cell) => cell.state)),
     );
     setNextDiffMap(
       computeDiffMap(
         newGrid.cells.map((cellRow) => cellRow.map((cell) => cell.state)),
-        newGrid.computeNextStates()
-      )
+        newGrid.computeNextStates(),
+      ),
     );
   }, []);
 
@@ -125,11 +125,11 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
       setGameState(
         eventPlayer === GameState.PLAYER_A
           ? GameState.PLAYER_B
-          : GameState.PLAYER_A
+          : GameState.PLAYER_A,
       );
       setPlayerValidations(newPlayerValidations);
     },
-    [game]
+    [game],
   );
 
   ////////////////////////////////
@@ -148,7 +148,7 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
         game_frozen_cells: game.grid.cells,
       } as GameMovePayload);
     },
-    [game, gameState, onMove, moves, cells]
+    [game, gameState, onMove, moves, cells],
   );
 
   const handleValidation = useCallback(() => {
@@ -177,13 +177,13 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
     setMoves([[], []]);
     setCells(game.grid.cells.map((row) => row.map((cell) => cell.clone())));
     setNextDiffMap(
-      computeDiffMap(game.getCellStates(), game.grid.computeNextStates())
+      computeDiffMap(game.getCellStates(), game.grid.computeNextStates()),
     );
     setNbGameStateUpdate(0);
     setGameState(
       game.initialPlayer === CellState.A
         ? GameState.PLAYER_A
-        : GameState.PLAYER_B
+        : GameState.PLAYER_B,
     );
   };
 
@@ -203,35 +203,41 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
 
       setNextDiffMap(undefined);
       let nbIter = 0;
-      const interval = setInterval(function () {
-        if (nbIter >= NB_UPDATE_PER_TURN) {
-          clearInterval(interval);
+      const interval = setInterval(
+        function () {
+          if (nbIter >= NB_UPDATE_PER_TURN) {
+            clearInterval(interval);
 
-          setNextDiffMap(
-            computeDiffMap(game.getCellStates(), game.grid.computeNextStates())
-          );
-          setNbGameStateUpdate(0);
-          setGameState(
-            game.initialPlayer === CellState.A
-              ? GameState.PLAYER_A
-              : GameState.PLAYER_B
-          );
-          return;
-        }
+            setNextDiffMap(
+              computeDiffMap(
+                game.getCellStates(),
+                game.grid.computeNextStates(),
+              ),
+            );
+            setNbGameStateUpdate(0);
+            setGameState(
+              game.initialPlayer === CellState.A
+                ? GameState.PLAYER_A
+                : GameState.PLAYER_B,
+            );
+            return;
+          }
 
-        const winState = updateGameState();
-        if (winState != false) {
-          clearInterval(interval);
+          const winState = updateGameState();
+          if (winState != false) {
+            clearInterval(interval);
 
-          setNbGameStateUpdate(0);
-          setWinner(winState);
-          setGameState(GameState.END);
-          return;
-        }
+            setNbGameStateUpdate(0);
+            setWinner(winState);
+            setGameState(GameState.END);
+            return;
+          }
 
-        nbIter += 1;
-        setNbGameStateUpdate(nbIter);
-      }, (1000 / FRAME_RATE) | 0);
+          nbIter += 1;
+          setNbGameStateUpdate(nbIter);
+        },
+        (1000 / FRAME_RATE) | 0,
+      );
     }
   }, [game, gameState]);
 

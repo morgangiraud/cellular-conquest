@@ -19,7 +19,7 @@ module.exports = {
       },
     },
   },
-  plugins: [require("@tailwindcss/aspect-ratio")],
+  plugins: [],
   safelist: [
     {
       pattern: /bg-cell-(a|b|empty|secondary)/,

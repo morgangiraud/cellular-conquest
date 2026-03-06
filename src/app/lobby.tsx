@@ -1,23 +1,22 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { REALTIME_LISTEN_TYPES, RealtimeChannel } from "@supabase/supabase-js";
+import { RealtimeChannel } from "@supabase/supabase-js";
 
 import Button from "./components/Button";
 
-import type { Database } from "@/lib/database.types";
 import { debugLog } from "@/utils";
 import { LobbyGameStartPayload } from "@/types/supabase";
+import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 
 const PRESENCE_KEY = "ceco-lobby";
 interface LobbyProps {
   sessionUserId: string;
-  startGame: (gameId: string) => void;
+  startGame: (gameId: number) => void;
 }
 
 export default function Lobby({ sessionUserId, startGame }: LobbyProps) {
-  const supabase = createClientComponentClient<Database>();
+  const supabase = getSupabaseBrowserClient();
 
   const [userState, setUserState] = useState<string[]>([]);
   const [lobbyChannel, setLobbyChannel] = useState<RealtimeChannel>();
@@ -38,7 +37,7 @@ export default function Lobby({ sessionUserId, startGame }: LobbyProps) {
 
       if (presenceState[PRESENCE_KEY]) {
         const userIds = presenceState[PRESENCE_KEY].map(
-          (value) => value.user_id
+          (value) => value.user_id,
         );
 
         setUserState(userIds);
@@ -55,8 +54,8 @@ export default function Lobby({ sessionUserId, startGame }: LobbyProps) {
       }
     });
 
-    lobbyChannel.subscribe(async (status, err) => {
-      if (status == "SUBSCRIBED") {
+    lobbyChannel.subscribe(async (status) => {
+      if (status === "SUBSCRIBED") {
         await lobbyChannel.track({ user_id: sessionUserId });
         setLobbyChannel(lobbyChannel);
       }
@@ -93,7 +92,7 @@ export default function Lobby({ sessionUserId, startGame }: LobbyProps) {
     }
 
     const event = {
-      type: REALTIME_LISTEN_TYPES.BROADCAST,
+      type: "broadcast" as const,
       event: "game_start",
       payload: {
         game_id: game.id,

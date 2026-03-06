@@ -1,13 +1,10 @@
 import "./globals.css";
 
-import { Inter } from "next/font/google";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
 
 import Footer from "@/app/components/Footer";
 import Nav from "./components/Nav";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Cellular Conquest",
@@ -21,7 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className}`}>
+      <body>
         <Nav />
 
         <div className="flex items-center justify-center max-h-fit pb-4">

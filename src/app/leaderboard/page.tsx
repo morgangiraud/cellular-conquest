@@ -1,9 +1,6 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
-
-import type { Database } from "@/lib/database.types";
-
 import { createClient } from "@supabase/supabase-js";
+import type { Database } from "@/lib/database.types";
+import { getSupabaseServerClient } from "@/lib/supabase/server";
 
 function UnavailableLeaderboard() {
   return (
@@ -24,10 +21,10 @@ function UnavailableLeaderboard() {
 export default async function Home() {
   const hasSupabaseClientEnv = Boolean(
     process.env.NEXT_PUBLIC_SUPABASE_URL &&
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   );
   const hasSupabaseServiceRoleEnv = Boolean(
-    process.env.SUPABASE_SERVICE_ROLE_KEY
+    process.env.SUPABASE_SERVICE_ROLE_KEY,
   );
 
   if (!hasSupabaseClientEnv || !hasSupabaseServiceRoleEnv) {
@@ -37,11 +34,9 @@ export default async function Home() {
   try {
     const rootSupabase = createClient<Database>(
       process.env.NEXT_PUBLIC_SUPABASE_URL as string,
-      process.env.SUPABASE_SERVICE_ROLE_KEY as string
+      process.env.SUPABASE_SERVICE_ROLE_KEY as string,
     );
-    const supabase = createServerComponentClient<Database>({
-      cookies,
-    });
+    const supabase = await getSupabaseServerClient();
 
     const { data, error } = await rootSupabase
       .from("profiles")

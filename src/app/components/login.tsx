@@ -1,13 +1,11 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
 import LoginForm from "./LoginForm";
 
-import type { Database } from "@/lib/database.types";
+import { getSupabaseServerClient } from "@/lib/supabase/server";
 
 export default async function Login() {
   const hasSupabaseClientEnv = Boolean(
     process.env.NEXT_PUBLIC_SUPABASE_URL &&
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
   );
 
   if (!hasSupabaseClientEnv) {
@@ -15,7 +13,7 @@ export default async function Login() {
   }
 
   try {
-    const supabase = createServerComponentClient<Database>({ cookies });
+    const supabase = await getSupabaseServerClient();
 
     const {
       data: { session },
