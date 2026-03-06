@@ -194,7 +194,7 @@ export class Game {
     this.fortressCfg = fortressCfg;
     this.grid = new Grid(size, this.initialStates());
     this.initialPlayer =
-      initialPlayer || Math.random() < 0.5 ? CellState.A : CellState.B;
+      initialPlayer ?? (Math.random() < 0.5 ? CellState.A : CellState.B);
   }
 
   initialStates() {

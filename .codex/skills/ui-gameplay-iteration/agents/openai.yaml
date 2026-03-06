@@ -1,0 +1,4 @@
+interface:
+  display_name: "UI Gameplay Iteration"
+  short_description: "Iterate gameplay UI, UX clarity, and accessibility"
+  default_prompt: "Use $ui-gameplay-iteration to improve gameplay UX and screen clarity."

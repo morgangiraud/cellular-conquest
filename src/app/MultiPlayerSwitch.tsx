@@ -7,12 +7,10 @@ import Game from "./Game";
 import { GameContextProvider } from "./contexts/GameContext";
 import Lobby from "./lobby";
 import Legend from "./components/Legend";
-import { debuglog } from "util";
 import { MultiplayerGameContextProvider } from "./contexts/MultiplayerGameContext";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Database } from "@/lib/database.types";
 import { GameMetadata } from "@/types/supabase";
 import MultiplayerGame from "./MultiplayerGame";
+import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 
 interface MultiPlayerSwitchProps {
   user: User | null;
@@ -22,10 +20,8 @@ export default function MultiPlayerSwitch({ user }: MultiPlayerSwitchProps) {
   const [gameMetadata, setGameMetadata] = useState<GameMetadata>();
   const [hasGameStarted, setHasGameStarted] = useState(false);
 
-  const startGame = async (gameId: string) => {
-    debuglog(`Starting game: ${gameId}`);
-
-    const supabase = createClientComponentClient<Database>();
+  const startGame = async (gameId: number) => {
+    const supabase = getSupabaseBrowserClient();
 
     const { data: gameMetadata, error } = await supabase
       .from("games")

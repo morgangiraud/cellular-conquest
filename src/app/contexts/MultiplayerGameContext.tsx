@@ -12,7 +12,6 @@ import {
   BOARD_SIZE,
   CellState,
   DiffMap,
-  fortressCfg,
   FRAME_RATE,
   GameState,
   NB_MAX_MOVES,
@@ -20,6 +19,7 @@ import {
   Player,
   Territory,
 } from "@/constants";
+import type { fortressCfg as FortressCfg } from "@/constants";
 import { Cell, Game, Grid } from "@/Game";
 import { computeDiffMap, debugLog } from "@/utils";
 
@@ -30,14 +30,9 @@ import {
   GameValidationEvent,
   GameValidationPayload,
 } from "@/types/supabase";
-import {
-  REALTIME_LISTEN_TYPES,
-  RealtimeChannel,
-  User,
-} from "@supabase/supabase-js";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Database } from "@/lib/database.types";
+import { RealtimeChannel, User } from "@supabase/supabase-js";
 import { GameContextProps } from "./GameContext";
+import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 
 export const MultiplayerGameContext = createContext<
   GameContextProps | undefined
@@ -50,7 +45,7 @@ interface MultiplayerGameContextProviderProps {
 }
 
 const size = BOARD_SIZE;
-const fortressCfg: fortressCfg = {
+const fortressCfg: FortressCfg = {
   a: { x: (size / 2) | 0, y: 1, width: 1, height: 1 },
   b: { x: (size / 2) | 0, y: size - 2, width: 1, height: 1 },
 };
@@ -75,9 +70,9 @@ export const MultiplayerGameContextProvider = ({
   // Supabase
   const currentPlayerIdx = useMemo(
     () => (user.id === gameMetadata.player_a_id ? 0 : 1),
-    [user.id, gameMetadata.player_a_id]
+    [user.id, gameMetadata.player_a_id],
   );
-  const supabase = createClientComponentClient<Database>();
+  const supabase = getSupabaseBrowserClient();
   const [gameChannel, setGameChannel] = useState<RealtimeChannel>();
 
   ////////////////////////////////
@@ -95,10 +90,10 @@ export const MultiplayerGameContextProvider = ({
       const moveHash = payload.move.join("-");
       const oldMoves = payload.moves;
       const oldCells = payload.cells.map((row) =>
-        row.map((cell) => new Cell(cell.state, cell.territory))
+        row.map((cell) => new Cell(cell.state, cell.territory)),
       );
       const gameFrozenCells = payload.game_frozen_cells.map((row) =>
-        row.map((cell) => new Cell(cell.state, cell.territory))
+        row.map((cell) => new Cell(cell.state, cell.territory)),
       );
 
       const playerMoves = oldMoves[playerIdx];
@@ -131,16 +126,16 @@ export const MultiplayerGameContextProvider = ({
 
       const newGrid = new Grid(
         size,
-        oldCells.map((cellRow) => cellRow.map((cell) => cell.state))
+        oldCells.map((cellRow) => cellRow.map((cell) => cell.state)),
       );
       setNextDiffMap(
         computeDiffMap(
           newGrid.cells.map((cellRow) => cellRow.map((cell) => cell.state)),
-          newGrid.computeNextStates()
-        )
+          newGrid.computeNextStates(),
+        ),
       );
     },
-    []
+    [],
   );
 
   const onBroadcastValidation = useCallback(
@@ -154,7 +149,7 @@ export const MultiplayerGameContextProvider = ({
       const eventPlayer = payload.player;
       const newPlayerValidations = payload.playerValidations;
       const cells = payload.cells.map((row) =>
-        row.map((cell) => new Cell(cell.state, cell.territory))
+        row.map((cell) => new Cell(cell.state, cell.territory)),
       );
 
       game.grid.assignCells(cells.map((row) => row.map((cell) => cell.state)));
@@ -169,7 +164,7 @@ export const MultiplayerGameContextProvider = ({
       }
       setPlayerValidations(newPlayerValidations);
     },
-    [game, currentPlayerIdx]
+    [game, currentPlayerIdx],
   );
 
   ////////////////////////////////
@@ -182,7 +177,7 @@ export const MultiplayerGameContextProvider = ({
       if (!cells) return;
 
       gameChannel.send({
-        type: REALTIME_LISTEN_TYPES.BROADCAST,
+        type: "broadcast",
         event: "move",
         payload: {
           player: gameState,
@@ -193,7 +188,7 @@ export const MultiplayerGameContextProvider = ({
         },
       } as GameMoveEvent);
     },
-    [game, gameState, gameChannel, moves, cells]
+    [game, gameState, gameChannel, moves, cells],
   );
 
   const handleValidation = useCallback(() => {
@@ -203,7 +198,7 @@ export const MultiplayerGameContextProvider = ({
     newPlayerValidations[currentPlayerIdx] = true;
 
     gameChannel.send({
-      type: REALTIME_LISTEN_TYPES.BROADCAST,
+      type: "broadcast",
       event: "validation",
       payload: {
         player: gameState,
@@ -225,11 +220,11 @@ export const MultiplayerGameContextProvider = ({
     setPlayerValidations([false, false]);
     setCells(game.grid.cells.map((row) => row.map((cell) => cell.clone())));
     setNextDiffMap(
-      computeDiffMap(game.getCellStates(), game.grid.computeNextStates())
+      computeDiffMap(game.getCellStates(), game.grid.computeNextStates()),
     );
     setNbGameStateUpdate(0);
     setGameState(
-      currentPlayerIdx === 0 ? GameState.PLAYER_A : GameState.PLAYER_B
+      currentPlayerIdx === 0 ? GameState.PLAYER_A : GameState.PLAYER_B,
     );
   }, [currentPlayerIdx]);
 
@@ -271,49 +266,55 @@ export const MultiplayerGameContextProvider = ({
 
       setNextDiffMap(undefined);
       let nbIter = 0;
-      const interval = setInterval(function () {
-        if (nbIter >= NB_UPDATE_PER_TURN) {
-          clearInterval(interval);
+      const interval = setInterval(
+        function () {
+          if (nbIter >= NB_UPDATE_PER_TURN) {
+            clearInterval(interval);
 
-          setNextDiffMap(
-            computeDiffMap(game.getCellStates(), game.grid.computeNextStates())
-          );
-          setNbGameStateUpdate(0);
-          setGameState(
-            user.id === gameMetadata.player_a_id
-              ? GameState.PLAYER_A
-              : GameState.PLAYER_B
-          );
-          return;
-        }
-
-        const winState = updateGameState();
-        if (winState != false) {
-          clearInterval(interval);
-
-          setNbGameStateUpdate(0);
-          setWinner(winState);
-          setGameState(GameState.END);
-
-          if (
-            (user.id === gameMetadata.player_a_id &&
-              winState === CellState.A) ||
-            (user.id === gameMetadata.player_b_id && winState === CellState.B)
-          ) {
-            supabase
-              .from("games")
-              .update({ winner_id: user.id })
-              .eq("id", gameMetadata.id)
-              .then((val) => {
-                console.log("call made", { val });
-              });
+            setNextDiffMap(
+              computeDiffMap(
+                game.getCellStates(),
+                game.grid.computeNextStates(),
+              ),
+            );
+            setNbGameStateUpdate(0);
+            setGameState(
+              user.id === gameMetadata.player_a_id
+                ? GameState.PLAYER_A
+                : GameState.PLAYER_B,
+            );
+            return;
           }
-          return;
-        }
 
-        nbIter += 1;
-        setNbGameStateUpdate(nbIter);
-      }, (1000 / FRAME_RATE) | 0);
+          const winState = updateGameState();
+          if (winState != false) {
+            clearInterval(interval);
+
+            setNbGameStateUpdate(0);
+            setWinner(winState);
+            setGameState(GameState.END);
+
+            if (
+              (user.id === gameMetadata.player_a_id &&
+                winState === CellState.A) ||
+              (user.id === gameMetadata.player_b_id && winState === CellState.B)
+            ) {
+              supabase
+                .from("games")
+                .update({ winner_id: user.id })
+                .eq("id", gameMetadata.id)
+                .then((val) => {
+                  console.log("call made", { val });
+                });
+            }
+            return;
+          }
+
+          nbIter += 1;
+          setNbGameStateUpdate(nbIter);
+        },
+        (1000 / FRAME_RATE) | 0,
+      );
     }
   }, [game, gameState, user.id, gameMetadata.player_a_id]);
 
@@ -355,7 +356,7 @@ export function useMultiplayerGameData() {
 
   if (context === undefined) {
     throw new Error(
-      "useMultiplayerGameData must be used within a WalletProvider"
+      "useMultiplayerGameData must be used within a WalletProvider",
     );
   }
 

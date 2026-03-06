@@ -1,0 +1,4 @@
+interface:
+  display_name: "Cellular Engine"
+  short_description: "Work on game rules, turns, and simulation logic"
+  default_prompt: "Use $cellular-engine to evolve game rules and tests safely."
