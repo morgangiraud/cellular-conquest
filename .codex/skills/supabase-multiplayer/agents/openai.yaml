@@ -1,0 +1,4 @@
+interface:
+  display_name: "Supabase Multiplayer"
+  short_description: "Maintain realtime auth and multiplayer data flows"
+  default_prompt: "Use $supabase-multiplayer to adjust Supabase realtime and DB behavior."
