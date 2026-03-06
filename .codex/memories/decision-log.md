@@ -2,6 +2,18 @@
 
 Append only. Do not rewrite past entries; add a new entry for reversals.
 
+## 2026-03-06 - Node 24 baseline alignment
+
+- Context: Local environment and team runtime moved forward to Node 24 after the initial dependency refresh standardized on Node 22.13.0.
+- Decision: Raise project runtime baseline to Node 24 across `.nvmrc`, package engines, CI setup, and docs.
+- Rationale: Keep local/CI runtime expectations aligned and unlock newest engine-compatible dependency paths without `--ignore-engines` workarounds.
+
+## 2026-03-06 - Major dependency refresh with Node baseline bump
+
+- Context: Upgrading direct dependencies to current major versions introduced engine constraints (ESLint/Next stack) and API changes (Supabase auth helper clients, Next 16 cookie/session flow).
+- Decision: Standardize project runtime on Node `22.13.0`, migrate auth client creation to shared `src/lib/supabase/*` factories, adopt ESLint flat config for Next 16, and prune unused direct dependencies while keeping Tailwind on the 3.4 line for compatibility.
+- Rationale: Preserve momentum on security/runtime freshness without a full UI styling migration, while restoring passing lint/type/test/build checks after framework and SDK upgrades.
+
 ## 2026-03-06 - Codex workflow defaults
 
 - Context: Need explicit standing execution rules for all future Codex work in this repository.

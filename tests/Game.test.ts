@@ -23,7 +23,7 @@ const expectGridStates = (grid: Grid, expectedStates: CellState[][]) => {
 
 const expectGridTerritories = (
   grid: Grid,
-  expectedTerritories: Territory[][]
+  expectedTerritories: Territory[][],
 ) => {
   for (let i = 0; i < grid.size; i++) {
     for (let j = 0; j < grid.size; j++) {

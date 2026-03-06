@@ -55,7 +55,7 @@ const CellView = ({
               }`
             : "cursor-not-allowed",
           diff[0] !== 0 ? `diff-${diff[1]}` : "",
-          className
+          className,
         )}
         onClick={handleClick}
       >

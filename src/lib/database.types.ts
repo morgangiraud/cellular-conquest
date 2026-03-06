@@ -71,7 +71,7 @@ export interface Database {
             columns: ["player_b_id"];
             referencedRelation: "users";
             referencedColumns: ["id"];
-          }
+          },
         ];
       };
       profiles: {
@@ -96,7 +96,7 @@ export interface Database {
             columns: ["id"];
             referencedRelation: "users";
             referencedColumns: ["id"];
-          }
+          },
         ];
       };
     };
@@ -155,7 +155,7 @@ export interface Database {
             columns: ["owner"];
             referencedRelation: "users";
             referencedColumns: ["id"];
-          }
+          },
         ];
       };
       migrations: {
@@ -228,7 +228,7 @@ export interface Database {
             columns: ["owner"];
             referencedRelation: "users";
             referencedColumns: ["id"];
-          }
+          },
         ];
       };
     };

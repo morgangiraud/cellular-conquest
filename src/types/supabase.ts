@@ -1,7 +1,6 @@
 import { Cell } from "@/Game";
 import { GameState } from "@/constants";
 import { Database } from "@/lib/database.types";
-import { REALTIME_LISTEN_TYPES } from "@supabase/supabase-js";
 
 export type SupabaseTables = Database["public"]["Tables"];
 export type Games = SupabaseTables["games"];
@@ -9,19 +8,19 @@ export type GameMetadata = Games["Row"];
 
 // Lobby
 export type LobbyGameStartEvent = {
-  type: REALTIME_LISTEN_TYPES.BROADCAST;
+  type: "broadcast";
   event: "game_start";
   payload: LobbyGameStartPayload;
 };
 
 export type LobbyGameStartPayload = {
-  game_id: string;
+  game_id: number;
   players: string[];
 };
 
 // Game
 export type GameMoveEvent = {
-  type: REALTIME_LISTEN_TYPES.BROADCAST;
+  type: "broadcast";
   event: "move";
   payload: GameMovePayload;
 };
@@ -38,7 +37,7 @@ export type GameMovePayload = {
 };
 
 export type GameValidationEvent = {
-  type: REALTIME_LISTEN_TYPES.BROADCAST;
+  type: "broadcast";
   event: "validation";
   payload: GameValidationPayload;
 };

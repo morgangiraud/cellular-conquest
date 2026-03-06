@@ -36,7 +36,7 @@ This repository hosts Cellular Conquest, a Next.js strategy game with offline an
   - `src/app/globals.css`
 - Auth and middleware:
   - `src/app/auth/callback/route.ts`
-  - `src/middleware.ts`
+  - `src/proxy.ts`
 - Supabase schema and config:
   - `supabase/config.toml`
   - `supabase/migrations/*.sql`

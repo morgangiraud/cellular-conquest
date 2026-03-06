@@ -18,7 +18,7 @@ export function initBoardState(size: number): CellState[][] {
 
 export function computeDiffMap(
   states: CellState[][],
-  nextStates: CellState[][]
+  nextStates: CellState[][],
 ): DiffMap {
   return states.map((stateRow, i) =>
     stateRow.map((state, j) => {
@@ -30,7 +30,7 @@ export function computeDiffMap(
           nextStates[i][j],
         ];
       }
-    })
+    }),
   );
 }
 
