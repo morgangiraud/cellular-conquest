@@ -6,9 +6,11 @@ description: Maintain and evolve the local game engine for Cellular Conquest. Us
 # Cellular Engine
 
 ## Overview
+
 Use this skill to implement and validate deterministic game behavior in offline and multiplayer modes.
 
 ## Workflow
+
 1. Read `references/game-rules.md` before changing any rules or constants.
 2. Read `references/state-machine.md` when changing turn flow or validation behavior.
 3. Read `references/test-strategy.md` before adding or modifying tests.
@@ -17,11 +19,13 @@ Use this skill to implement and validate deterministic game behavior in offline 
 6. Run focused tests first, then broader checks if dependencies are available.
 
 ## Guardrails
+
 - Preserve deterministic behavior for `Grid.computeNextStates`, `Grid.computeTerritories`, `Grid.update`, and `Game.checkWin`.
 - Prefer adding tests for every behavior change in engine logic.
 - Keep constants and behavior aligned: `NB_MAX_MOVES`, `NB_UPDATE_PER_TURN`, `BOARD_SIZE`, and `FRAME_RATE`.
 - Avoid hidden coupling between React state and engine classes; clone cell state when crossing boundaries.
 
 ## Validation
+
 - Run `yarn test --runInBand tests/Game.test.ts` for engine-level changes.
 - If dependencies are installed, run `yarn typecheck` and `yarn test` before handoff.

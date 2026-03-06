@@ -5,11 +5,25 @@ import LoginForm from "./LoginForm";
 import type { Database } from "@/lib/database.types";
 
 export default async function Login() {
-  const supabase = createServerComponentClient<Database>({ cookies });
+  const hasSupabaseClientEnv = Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  );
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  if (!hasSupabaseClientEnv) {
+    return null;
+  }
 
-  return <LoginForm session={session} />;
+  try {
+    const supabase = createServerComponentClient<Database>({ cookies });
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    return <LoginForm session={session} />;
+  } catch (error) {
+    console.error("Unable to resolve Supabase session for login.", error);
+    return null;
+  }
 }
